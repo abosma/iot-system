@@ -4,3 +4,7 @@
 // `nodeIntegration` is turned off. Use `preload.js` to
 // selectively enable features needed in the rendering
 // process.
+'use strict'
+
+window.$ = window.jQuery = require('jquery')
+window.Bootstrap = require('bootstrap')

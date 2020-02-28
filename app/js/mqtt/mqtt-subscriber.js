@@ -1,5 +1,4 @@
-function subscribeToTopic(client, topic)
-{
+function subscribeToTopic(client, topic) {
     client.subscribe(topic);
 }
 

@@ -1,5 +1,4 @@
-async function publishMessageToTopic(client, topic, message)
-{
+async function publishMessageToTopic(client, topic, message) {
     client.publish(topic, message);
 }
 

@@ -1,22 +1,42 @@
 <!DOCTYPE html>
-<html>
-  <head>
+<html lang="en">
+
+<head>
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; img-src 'self' data: *; style-src-elem 'self' data: *; font-src 'self' data: *">
     <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
     <title>Hello World!</title>
-  </head>
-  <body>
-    <h1>Hello World!</h1>
-    We are using Node.js <span id="node-version"></span>,
-    Chromium <span id="chrome-version"></span>,
-    and Electron <span id="electron-version"></span>.
+    <link rel="stylesheet" href="../node_modules//bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap">
+    <link rel="stylesheet" href="css/stylesheet.css">
+</head>
 
-    <button id="testButton">Test</button>
+<body>
+    <br><button id="subscribeButton">Create topic test_topic</button>
+    <br><button id="sendButton">Send message to test_topic</button>
 
-    <!-- You can also require other files to run in this process -->
-    <script src="./js/renderer.js"></script>
-    <script src="./js/index.js"></script>
-  </body>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">QR</th>
+                <th scope="col">Topic</th>
+                <th scope="col">Content</th>
+            </tr>
+        </thead>
+        <tbody id="qrTable">
+        </tbody>
+    </table>
+
+    <blockquote class="blockquote text-center">
+        <p id="messageText" class="mb-0">Test</p>
+        <footer id="messageTopic" class="blockquote-footer">Test</footer>
+    </blockquote>
+
+    <div id="messageRenderer"></div>
+    <script src="js/renderer.js"></script>
+    <script src="js/index.js"></script>
+</body>
+
 </html>
