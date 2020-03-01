@@ -2,7 +2,9 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const qrcode = require("qrcode");
-const mqtt_con = require("./app/js/mqtt/mqtt-connection")
+
+var mqtt_connection = require("./app/js/mqtt/mqtt-connection").mqtt_connection;
+var mqtt_con;
 
 // Hot reloading of electron application, looks for changes in ./app folder.
 require("electron-reload")("./app");
@@ -27,11 +29,31 @@ function createWindow() {
     // mainWindow.webContents.openDevTools()
 }
 
+function connectToServer() {
+    mqtt_con = new mqtt_connection();
+
+    mqtt_con.connectToServer("mqtt://127.0.0.1:1883")
+        .then((resolve) => {
+            startMqttCallback(resolve);
+            console.log("Connected to MQTT Server.")
+        })
+        .catch((reject) => {
+            console.log(reject.message);
+        })
+}
+
+function startMqttCallback(mqtt_client) {
+    mqtt_client.on("message", (topic, message) => {
+        BrowserWindow.getFocusedWindow().webContents.send("render-message", topic, message.toString());
+    })
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", function () {
     createWindow();
+    connectToServer();
 })
 
 // Quit when all windows are closed.
@@ -40,6 +62,7 @@ app.on("window-all-closed", function () {
     // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== "darwin") {
         mqtt_con.disconnectClient();
+        
         app.quit();
     }
 })
@@ -55,15 +78,27 @@ app.on("activate", function () {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 ipcMain.on("create-topic", (event, topic) => {
-    mqtt_con.subscribeToTopic(topic);
+    mqtt_con.subscribeToTopic(topic)
+        .then((success) => {
+            console.log(success);
 
-    qrcode.toDataURL(topic, function (err, url) {
-        if (!err) {
-            event.reply("render-qr", topic, url);
-        }
-    })
+            qrcode.toDataURL(topic, function (err, url) {
+                if (!err) {
+                    event.reply("render-qr", topic, url);
+                }
+            })
+        })
+        .catch((error) => {
+            console.log(error.message);
+        });
 });
 
 ipcMain.on("send-message", (event, topic, message) => {
-    mqtt_con.publishMessageToTopic(topic, message);
+    mqtt_con.publishMessageToTopic(topic, message)
+        .then((success) => {
+            console.log(success);
+        })
+        .catch((error) => {
+            console.log(error.message);
+        });
 });
