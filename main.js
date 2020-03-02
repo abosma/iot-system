@@ -1,10 +1,13 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
-const qrcode = require("qrcode");
 
-var mqtt_connection = require("./app/js/mqtt/mqtt-connection").mqtt_connection;
+var mqttHandler = require("./app/js/mqtt/mqtt-controller").mqtt_handler;
+var qrHandler = require("./app/js/qr-controller");
+var dbHandler = require("./app/js/database/db-controller").db_handler;
+
 var mqtt_con;
+var db_con;
 
 // Hot reloading of electron application, looks for changes in ./app folder.
 require("electron-reload")("./app");
@@ -29,23 +32,28 @@ function createWindow() {
     // mainWindow.webContents.openDevTools()
 }
 
-function connectToServer() {
-    mqtt_con = new mqtt_connection();
+function connectToServers() {
+    mqtt_con = new mqttHandler();
+    db_con = new dbHandler();
 
     mqtt_con.connectToServer("mqtt://127.0.0.1:1883")
         .then((resolve) => {
-            startMqttCallback(resolve);
+            mqtt_con.startMessageCallback();
             console.log("Connected to MQTT Server.")
+            
+            db_con.connectToDatabase()
+            .then((resolve) =>
+            {
+                console.log(resolve);
+            })
+            .catch((reject) =>
+            {
+                console.log(reject.message);
+            })
         })
         .catch((reject) => {
             console.log(reject.message);
         })
-}
-
-function startMqttCallback(mqtt_client) {
-    mqtt_client.on("message", (topic, message) => {
-        BrowserWindow.getFocusedWindow().webContents.send("render-message", topic, message.toString());
-    })
 }
 
 // This method will be called when Electron has finished
@@ -53,7 +61,7 @@ function startMqttCallback(mqtt_client) {
 // Some APIs can only be used after this event occurs.
 app.on("ready", function () {
     createWindow();
-    connectToServer();
+    connectToServers();
 })
 
 // Quit when all windows are closed.
@@ -80,13 +88,15 @@ app.on("activate", function () {
 ipcMain.on("create-topic", (event, topic) => {
     mqtt_con.subscribeToTopic(topic)
         .then((success) => {
-            console.log(success);
-
-            qrcode.toDataURL(topic, function (err, url) {
-                if (!err) {
-                    event.reply("render-qr", topic, url);
-                }
+            qrHandler.generateDataUrl(topic)
+            .then((qrCodeImage) =>
+            {
+                event.reply("render-qr", topic, qrCodeImage);
             })
+            .catch((error) =>
+            {
+                console.log(error);
+            });
         })
         .catch((error) => {
             console.log(error.message);

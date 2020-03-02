@@ -1,6 +1,7 @@
 const mqtt = require("async-mqtt");
+const {BrowserWindow} = require("electron");
 
-class mqtt_connection {
+class mqtt_handler {
     client = null;
 
     connectToServer(serverIp) {
@@ -62,9 +63,23 @@ class mqtt_connection {
         })
     }
 
+    startMessageCallback()
+    {
+        if(this.clientIsValid())
+        {
+            this.client.on("message", (topic, message) => {
+                BrowserWindow.getFocusedWindow().webContents.send("render-message", topic, message.toString());
+            })
+        }
+        else
+        {
+            console.log("Client is not connected to server, please connect to a server.")
+        }
+    }
+
     clientIsValid() {
         return this.client != null && this.client.connected == true;
     }
 }
 
-exports.mqtt_connection = mqtt_connection;
+exports.mqtt_handler = mqtt_handler;
