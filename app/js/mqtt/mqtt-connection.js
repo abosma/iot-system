@@ -1,6 +1,4 @@
 const mqtt = require("async-mqtt");
-const mqtt_pub = require("./mqtt-publisher");
-const mqtt_sub = require("./mqtt-subscriber");
 
 class mqtt_connection {
     client = null;
