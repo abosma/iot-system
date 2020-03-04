@@ -1,0 +1,1 @@
+%~dp0\bin\initdb -U postgres -A password -E utf8 -W -D %~dp0\data

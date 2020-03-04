@@ -1,0 +1,1 @@
+%~dp0\bin\pg_ctl stop -D %~dp0\data
