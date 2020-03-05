@@ -19,19 +19,42 @@ class db_handler {
         })
     }
 
-    create(queryParams)
+    createTopic(topicName)
     {
         if(this.clientIsValid())
         {
-            this.client.query("INSERT INTO $1::text VALUES($2::text, $3::text)", [queryParams[0], queryParams[1], queryParams[2]])
-            .then((resolve) =>
+            if(!this.topicExists(topicName))
             {
-                console.log(resolve);
-            })
-            .catch((error) => 
-            {
-                console.log(error);
-            })
+                this.client.query("INSERT INTO content VALUES(DEFAULT, null) ON CONFLICT DO NOTHING RETURNING content_id")
+                .then((result_content) =>
+                {
+                    var content_id = result_content.rows[0].content_id;
+
+                    this.client.query("INSERT INTO qrcode VALUES(DEFAULT, null) ON CONFLICT DO NOTHING RETURNING qrcode_id")
+                    .then((result_qrcode) =>
+                    {
+                        var qrcode_id = result_qrcode.rows[0].qrcode_id;
+                        
+                        this.client.query("INSERT INTO topic VALUES(DEFAULT, $1::integer, $2::integer, $3::text) ON CONFLICT DO NOTHING", [qrcode_id, content_id, topicName])
+                        .then((resolve) =>
+                        {
+                            console.log(resolve);
+                        })
+                        .catch((error) => 
+                        {
+                            console.log(error);
+                        })
+                    })
+                    .catch((error) => 
+                    {
+                        console.log(error);
+                    })
+                })
+                .catch((error) => 
+                {
+                    console.log(error);
+                })
+            }
         }
     }
 
@@ -85,7 +108,25 @@ class db_handler {
 
     clientIsValid()
     {
-        return this.client != null && this.client.connected == true;
+        return this.client != null && this.client._connected == true;
+    }
+
+    topicExists(topicName)
+    {
+        if(this.clientIsValid)
+        {
+            this.client.query("SELECT topic_name FROM topic WHERE topic_name = $1::text", topicName)
+            .then((topic_exists) =>
+            {
+                console.log(topic_exists);
+                return true;
+            })
+            .catch((topic_doesnt_exist) =>
+            {
+                console.log(topic_doesnt_exist);
+                return false;
+            })
+        }
     }
 }
 

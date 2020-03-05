@@ -3,7 +3,7 @@ const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 
 var mqttHandler = require("./app/js/mqtt/mqtt-controller").mqtt_handler;
-var qrHandler = require("./app/js/qr-controller");
+var qrHandler = require("./app/js/qr/qr-controller");
 var dbHandler = require("./app/js/database/db-controller").db_handler;
 
 var mqtt_con;
@@ -86,6 +86,8 @@ app.on("activate", function () {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 ipcMain.on("create-topic", (event, topic) => {
+    db_con.createTopic(topic);
+    
     mqtt_con.subscribeToTopic(topic)
         .then((success) => {
             qrHandler.generateDataUrl(topic)
