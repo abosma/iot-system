@@ -86,20 +86,26 @@ app.on("activate", function () {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 ipcMain.on("create-topic", (event, topic) => {
-    db_con.createTopic(topic);
-    
     mqtt_con.subscribeToTopic(topic)
-        .then((success) => {
+        .then(() => 
             qrHandler.generateDataUrl(topic)
             .then((qrCodeImage) =>
             {
-                event.reply("render-qr", topic, qrCodeImage);
+                db_con.createTopic(topic, qrCodeImage)
+                .then((success) =>
+                {
+                    event.reply("render-qr", topic, qrCodeImage);
+                })
+                .catch((error) => 
+                {
+                    console.log(error)
+                })
             })
             .catch((error) =>
             {
                 console.log(error);
-            });
-        })
+            })
+        )
         .catch((error) => {
             console.log(error.message);
         });
