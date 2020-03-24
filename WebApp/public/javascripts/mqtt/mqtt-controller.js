@@ -1,5 +1,4 @@
 const mqtt = require("async-mqtt");
-const {BrowserWindow} = require("electron");
 
 class mqtt_handler {
     client = null;
