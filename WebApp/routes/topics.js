@@ -35,3 +35,5 @@ router.delete('/', function(req, res)
 
     topic_handler.deleteTopic(topicId);
 })
+
+module.exports = router;

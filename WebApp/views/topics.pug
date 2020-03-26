@@ -5,9 +5,12 @@ html
     body
         h1 Topic configuration screen
 
-        if topics != null
-            p Topic list
-
-            ul
-                for topic in topics
-                    li= topic
+        p Topic List
+        ul
+            for topic in topicList
+                li= content.content_url
+            else
+                li There are no topics in the database.
+        
+        if errorMessage
+            h2= errorMessage

@@ -1,8 +1,8 @@
 const db = require('./database_connector')
 
-getTopic(topicId)
+function getTopic(topicId)
 {
-    db.query('SELECT * FROM topic WHERE topic_id = $1::integer', [topicId], (err, res) =>
+    db.query('SELECT * FROM topic WHERE id = $1::integer', [topicId], (err, res) =>
     {
         if(err)
         {
@@ -13,7 +13,7 @@ getTopic(topicId)
     })
 }
 
-getTopics()
+function getTopics()
 {
     db.query('SELECT * FROM topic', null, (err, res) =>
     {
@@ -26,7 +26,7 @@ getTopics()
     })
 }
 
-createTopic(topicName)
+function createTopic(topicName)
 {
     db.query('INSERT INTO topic VALUES(DEFAULT, NULL, $2::text) ON CONFLICT DO NOTHING', [topicName], (err, res) =>
     {
@@ -39,9 +39,9 @@ createTopic(topicName)
     })
 }
 
-updateTopic(topicName, contentId, topicId)
+function updateTopic(topicName, contentId, topicId)
 {
-    db.query('UPDATE topic SET topic_name = $1::text, content_id = $2::integer WHERE topic_id = $3::integer', [topicName, contentId, topicId], (err, res) =>
+    db.query('UPDATE topic SET topic_name = $1::text, content_id = $2::integer WHERE id = $3::integer', [topicName, contentId, topicId], (err, res) =>
     {
         if(err)
         {
@@ -52,9 +52,9 @@ updateTopic(topicName, contentId, topicId)
     })
 }
 
-deleteTopic(topicId)
+function deleteTopic(topicId)
 {
-    db.query('DELETE FROM topic WHERE topic_id = $1::integer', [topicId], (err, res) =>
+    db.query('DELETE FROM topic WHERE id = $1::integer', [topicId], (err, res) =>
     {
         if(err)
         {

@@ -1,13 +1,33 @@
-html
-    head
-        link(rel="stylesheet", href="/static/stylesheets/style.css")
-        title Topic Configuration Screen
-    body
-        h1 Content configuration screen
+extends layout
 
-        if contentList != null
-            p Topic list
+block append scripts
+    script(src='/javascripts/content/contentFunctions.js')
 
-            ul
-                for content in contentList
-                    li= content
+block layout-content
+    div.view.ContentView
+        h1.Banner Content Configuration Screen
+        div.Message
+            div.Title
+                h3 Testing Out
+
+        div.NavButtons
+            form(method='POST' action='/content')
+                label(for='contentUrl') Content URL:
+                input#contentUrl(type='text', placeholder='test url name' name='contentUrl')
+                button.btn.btn-primary(type='submit') Insert new content
+
+        p Content List
+        ul.list-group
+            for content in contentList
+                a.list-group-item.list-group-item-action(type='button', data-toggle='modal', data-target='#contentModal') #{content.content_url}
+            else
+                li There is no content in the database.
+
+        div(class='modal fade', id='contentModal', tabindex='-1', role='dialog', aria-labelledby="contentModalLabel", aria-hidden="true")
+            div(class='modal-dialog', role='document')
+                div(class='modal-content')
+                    div(class='modal-header')
+                        div(class='modal-title') Test
+
+        if errorMessage
+            h2= errorMessage

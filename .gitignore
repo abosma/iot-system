@@ -10,3 +10,4 @@ node_modules
 /pgsql/pgAdmin 4
 /pgsql/share
 /pgsql/StackBuilder
+/webapp/.env
