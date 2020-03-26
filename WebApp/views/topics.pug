@@ -1,0 +1,13 @@
+html
+    head
+        link(rel="stylesheet", href="/static/stylesheets/style.css")
+        title Topic Configuration Screen
+    body
+        h1 Topic configuration screen
+
+        if topics != null
+            p Topic list
+
+            ul
+                for topic in topics
+                    li= topic

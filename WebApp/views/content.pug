@@ -1,0 +1,13 @@
+html
+    head
+        link(rel="stylesheet", href="/static/stylesheets/style.css")
+        title Topic Configuration Screen
+    body
+        h1 Content configuration screen
+
+        if contentList != null
+            p Topic list
+
+            ul
+                for content in contentList
+                    li= content
