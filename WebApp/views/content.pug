@@ -1,6 +1,6 @@
 extends layout
 
-block append scripts
+block append appended_scripts
     script(src='/javascripts/content/contentFunctions.js')
 
 block layout-content
@@ -11,15 +11,19 @@ block layout-content
                 h3 Testing Out
 
         div.NavButtons
-            form(method='POST' action='/content')
+            form(id='addContentForm', method='POST', action='/content')
                 label(for='contentUrl') Content URL:
-                input#contentUrl(type='text', placeholder='test url name' name='contentUrl')
+                input(id='contentUrl', type='text', placeholder='test content url', name='contentUrl', pattern='[a-zA-Z0-9]+')
+                
+                label(for='contentType') Content Type:
+                input(id='contentType', type='text', placeholder='test content type', name='contentType', pattern='[a-zA-Z0-9]+')
+
                 button.btn.btn-primary(type='submit') Insert new content
 
         p Content List
-        ul.list-group
+        ul(class='list-group', id='contentListGroup')
             for content in contentList
-                a.list-group-item.list-group-item-action(type='button', data-toggle='modal', data-target='#contentModal') #{content.content_url}
+                a.list-group-item.list-group-item-action(type='button', data-contentid=content.id, id='contentItem') #{content.content_url}
             else
                 li There is no content in the database.
 
@@ -27,7 +31,30 @@ block layout-content
             div(class='modal-dialog', role='document')
                 div(class='modal-content')
                     div(class='modal-header')
-                        div(class='modal-title') Test
+                        div(class='modal-title', id='contentTitle') Basic Content Title
+                        button(type='button', class='close', data-dismiss='modal', aria-label='Close')
+                            span x
+                    div(class='modal-body')
+                        p(id='contentUrl') Basic Content Url
+                        p(id='contentType') Basic Content Type
+                    div(class='modal-footer')
+                        button(type='button', class='btn btn-outline-primary', id='updateContent') Update Content
+                        button(type='button', class='btn btn-outline-danger', id='deleteContent') Delete Content
+                        button(type='button', class='btn btn-outline-secondary', data-dismiss='modal') Cancel
 
-        if errorMessage
-            h2= errorMessage
+        div(class='modal fade', id='editContentModal', tabindex='-1', role='dialog', aria-laballedby='editContentModalLabel', aria-hidden='true')
+            div(class='modal-dialog', role='document')
+                div(class='modal-content')
+                    div(class='modal-header')
+                        div(class='modal-title') Editing Content
+                        button(type='button', class='close', data-dismiss='modal', aria-label='Close')
+                            span x
+                    div(class='modal-body')
+                        form(id='updateContentForm', method='PUT', action='/content')
+                            label(for='contentUrl', class='col-form-label') Content URL:
+                            input(id='contentUrl', class='form-control', type='text', name='contentUrl')
+                            label(for='contentType', class='col-form-label') Content Type:
+                            input(id='contentType', class='form-control', type='text', name='contentType')
+                    div(class='modal-footer')
+                        button(type='submit', class='btn btn-outline-primary', id='saveContentUpdate') Update Content
+                        button(type='button', class='btn btn-outline-secondary', data-dismiss='modal') Cancel

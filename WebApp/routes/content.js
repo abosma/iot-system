@@ -10,9 +10,7 @@ router.get('/', async function (req, res) {
         })
     })
     .catch(err => {
-        res.render('content', {
-            errorMessage: err
-        })
+        throw new Error(err);
     })
 })
 
@@ -21,41 +19,54 @@ router.get('/:contentId', async function (req, res) {
 
     content_handler.getContent(contentId)
     .then(data => {
-        res.render('content', {
-            content: data
-        })
+        const { id, content_url, content_type } = data.rows[0];
+
+        res.send(
+            {
+                contentId: id,
+                contentUrl: content_url,
+                contentType: content_type
+            }
+        )
     }).catch(err => {
-        res.render('content', {
-            errorMessage: err
-        })
+        throw new Error(err);
     })
 })
 
 router.post('/', async function (req, res) {
-    const { contentUrl } = req.body;
+    const { contentUrl, contentType } = req.body;
 
-    content_handler.createContent(contentUrl)
+    content_handler.createContent(contentUrl, contentType)
     .then(() => {
         res.redirect('/content');
     })
     .catch(err => {
-        res.render('content', {
-            errorMessage: err
-        })
+        throw new Error(err);
     })
 })
 
-router.put('/:contentId', function (req, res) {
-    let contentId = req.params.contentId;
-    let contentUrl = req.body;
+router.put('/', async function (req, res) {
+    const { contentId, contentUrl, contentType } = req.body;
 
-    content_handler.updateContent(contentUrl, contentId);
+    content_handler.updateContent(contentUrl, contentType, contentId)
+    .then(() =>{
+        res.sendStatus(200);
+    })
+    .catch(err => {
+        throw new Error(err);
+    });
 })
 
-router.delete('/', function (req, res) {
-    let contentId = req.params.contentId;
+router.delete('/', async function (req, res) {
+    const {contentId } = req.body;
 
-    content_handler.deleteContent(contentId);
+    content_handler.deleteContent(contentId)
+    .then(() => {
+        res.sendStatus(200);
+    })
+    .catch(err => {
+        throw new Error(err);
+    })
 })
 
 module.exports = router;
