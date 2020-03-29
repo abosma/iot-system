@@ -50,11 +50,10 @@ block layout-content
                         button(type='button', class='close', data-dismiss='modal', aria-label='Close')
                             span x
                     div(class='modal-body')
-                        form(id='updateContentForm', method='PUT', action='/content')
-                            label(for='contentUrl', class='col-form-label') Content URL:
-                            input(id='contentUrl', class='form-control', type='text', name='contentUrl')
-                            label(for='contentType', class='col-form-label') Content Type:
-                            input(id='contentType', class='form-control', type='text', name='contentType')
+                        label(for='contentUrl', class='col-form-label') Content URL:
+                        input(id='contentUrl', class='form-control', type='text', name='contentUrl')
+                        label(for='contentType', class='col-form-label') Content Type:
+                        input(id='contentType', class='form-control', type='text', name='contentType')
                     div(class='modal-footer')
-                        button(type='submit', class='btn btn-outline-primary', id='saveContentUpdate') Update Content
+                        button(type='button', class='btn btn-outline-primary', id='saveContentUpdate') Update Content
                         button(type='button', class='btn btn-outline-secondary', data-dismiss='modal') Cancel

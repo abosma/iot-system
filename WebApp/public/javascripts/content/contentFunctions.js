@@ -31,14 +31,6 @@ async function initializeContentModal(modalObject, contentId)
     modalObject.modal('show');
 }
 
-async function getContentData(contentId)
-{
-    return $.ajax({
-            url: '/content/' + contentId,
-            type: 'get'
-        })
-}
-
 function initializeEditModal(event)
 {
     var contentId = event.data.content_id;
@@ -46,8 +38,23 @@ function initializeEditModal(event)
     var contentModalObject = $('#contentModal');
     var editContentModalObject = $('#editContentModal');
 
+    editContentModalObject.find('#saveContentUpdate').on('click', 
+    {
+        content_id: contentId,
+        content_url: editContentModalObject.find('#contentUrl').val(),
+        content_type: editContentModalObject.find('#contentType').val()
+    }, updateContent);
+
     contentModalObject.modal('hide');
     editContentModalObject.modal('show');
+}
+
+async function getContentData(contentId)
+{
+    return $.ajax({
+            url: '/content/' + contentId,
+            type: 'get'
+        })
 }
 
 function updateContent(event)
@@ -85,4 +92,3 @@ function deleteContent(event)
         location.reload();
     })
 }
-
