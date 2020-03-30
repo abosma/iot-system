@@ -13,9 +13,14 @@ html
         script(src='/javascripts/dependencies/popper.min.js')
         script(src='/javascripts/dependencies/bootstrap.min.js')
   body
+    nav(class='navbar navbar-dark static-top bg-dark flex-md-nowrap p-0 shadow')
+      a(class='navbar-brand col-sm-3 col-md-2 mr-0 text-light') IoT Content Management System
+      ul(class='navbar-nav px-3')
+        li(class='nav-item text-nowrap')
+          a(class='nav-link text-light') Sign out
     div(class='container-fluid')
       div(class='row')
-        nav(class='cold-md-2 d-none d-md-block sidebar')
+        nav(class='col-md-2 d-none d-md-block bg-light sidebar')
           div(class='sidebar-sticky')
             ul(class='nav flex-column')
               li(class='nav-item')
