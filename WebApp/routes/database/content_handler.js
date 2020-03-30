@@ -13,14 +13,11 @@ function createContent(contentUrl, contentType) {
 }
 
 function updateContent(contentUrl, contentType, contentId) {
-    if(contentUrl && !contentType)
-    {
+    if (contentUrl && !contentType) {
         return db.query('UPDATE content SET content_url = $1::varchar WHERE id = $2::integer', [contentUrl, contentId]);
-    } else if (!contentUrl && contentType)
-    {
+    } else if (!contentUrl && contentType) {
         return db.query('UPDATE content SET content_type = $1::varchar WHERE id = $2::integer', [contentType, contentId]);
-    } else if(contentUrl && contentType)
-    {
+    } else if (contentUrl && contentType) {
         return db.query('UPDATE content SET content_url = $1::varchar, content_type = $2::varchar WHERE id = $3::integer', [contentUrl, contentType, contentId]);
     }
 }

@@ -23,11 +23,14 @@ $('.contentItem').on('click', function(event)
 
 async function initializeContentModal(modalObject, contentId)
 {
-    var contentData = await getContentData(contentId);
+    const contentData = await getContentData(contentId);
 
-    modalObject.find('#contentTitle').text(contentData.contentId);
-    modalObject.find('#contentUrl').text(contentData.contentUrl);
-    modalObject.find('#contentType').text(contentData.contentType);
+    const { contentUrl, contentType } = contentData;
+
+    modalObject.find('#contentTitle').text(contentId);
+    modalObject.find('#contentUrl').text(contentUrl ? contentUrl : 'This content has no URL.');
+    modalObject.find('#contentType').text(contentType ? contentType : 'This content has no type.');
+    
     modalObject.modal('show');
 }
 
