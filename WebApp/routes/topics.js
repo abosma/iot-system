@@ -1,39 +1,76 @@
-var express = require('express');
-var router = express.Router();
-var topic_handler = require('./database/topic_handler')
+const express = require('express');
+const router = express.Router();
+const topic_handler = require('./database/topic_handler')
 
-router.get('/', function(req, res)
+router.get('/', async function(req, res)
 {
-    topic_handler.getTopics();
+    topic_handler.getTopics()
+    .then(data => {
+        res.render('topics',
+        {
+            topicList: data.rows
+        })
+    })
+    .catch(err => {
+        throw new Error(err);
+    });
 })
 
-router.get('/:topicId', function(req, res)
+router.get('/:topicId', async function(req, res)
 {
     let topicId = req.params.topicId;
 
-    topic_handler.getTopic(topicId);
+    topic_handler.getTopic(topicId)
+    .then(data => {
+        const { topic_name, content_id } = data.rows[0];
+
+        res.send({
+            topicName: topic_name,
+            contentId: content_id
+        })
+    })
+    .catch(err => {
+        throw new Error(err);
+    });
 })
 
-router.post('/', function(req, res)
+router.post('/', async function(req, res)
 {
-    let { topicName } = req.body;
+    const { topicName } = req.body;
 
-    topic_handler.createTopic(topicName);
+    topic_handler.createTopic(topicName)
+    .then(() => {
+        res.redirect('/topics')
+    })
+    .catch(err => {
+        throw new Error(err);
+    });
 })
 
-router.put('/:topicId', function(req, res)
+router.put('/', async function(req, res)
 {
-    let topicId = req.params.topicId;
-    let { topicName, contentId } = req.body;
+    const { topicId, topicName, contentId } = req.body;
 
-    topic_handler.updateTopic(topicName, contentId, topicId);
+    topic_handler.updateTopic(topicName, contentId, topicId)
+    .then(() => {
+        res.sendStatus(200);
+    })
+    .catch(err => {
+        throw new Error(err);
+    });
 })
 
-router.delete('/', function(req, res)
+router.delete('/', async function(req, res)
 {
-    let topicId = req.params.topicId;
+    const { topicId } = req.body;
 
-    topic_handler.deleteTopic(topicId);
+    topic_handler.deleteTopic(topicId)
+    .then(() => {
+        res.sendStatus(200);
+    })
+    .catch(err => {
+        throw new Error(err);
+    });
 })
 
 module.exports = router;

@@ -6,10 +6,8 @@ block append appended_scripts
 block layout-content
     div.view.ContentView
         h1.Banner Content Configuration Screen
-        div.Message
-            div.Title
-                h3 Testing Out
 
+        h5 Manual Content Input
         div.NavButtons
             form(id='addContentForm', method='POST', action='/content')
                 label(for='contentUrl') Content URL:
@@ -20,10 +18,16 @@ block layout-content
 
                 button.btn.btn-primary(type='submit') Insert new content
 
+        h5 File Content Input
+        div(class='form-group')
+            form(id='uploadContentForm', method='POST', action='/content/upload', enctype="multipart/form-data")
+                input(id='contentFile', type='file', class='form-control-file', name='contentFile')
+                button(class='btn btn-primary', type='submit') Upload Content
+
         p Content List
         ul(class='list-group', id='contentListGroup')
             for content in contentList
-                a.list-group-item.list-group-item-action(type='button', data-contentid=content.id, id='contentItem') #{content.content_url}
+                a(class='list-group-item list-group-item-action contentItem', type='button', data-contentid=content.id) #{content.content_url}
             else
                 li There is no content in the database.
 
@@ -42,7 +46,7 @@ block layout-content
                         button(type='button', class='btn btn-outline-danger', id='deleteContent') Delete Content
                         button(type='button', class='btn btn-outline-secondary', data-dismiss='modal') Cancel
 
-        div(class='modal fade', id='editContentModal', tabindex='-1', role='dialog', aria-laballedby='editContentModalLabel', aria-hidden='true')
+        div(class='modal fade', id='contentEditModal', tabindex='-1', role='dialog', aria-laballedby='contentEditModalLabel', aria-hidden='true')
             div(class='modal-dialog', role='document')
                 div(class='modal-content')
                     div(class='modal-header')

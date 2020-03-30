@@ -1,72 +1,32 @@
 const db = require('./database_connector')
 
-function getTopic(topicId)
-{
-    db.query('SELECT * FROM topic WHERE id = $1::integer', [topicId], (err, res) =>
-    {
-        if(err)
-        {
-            return err;
-        }
-
-        return res;
-    })
+function getTopic(topicId) {
+    return db.query('SELECT * FROM topic WHERE id = $1::integer', [topicId]);
 }
 
-function getTopics()
-{
-    db.query('SELECT * FROM topic', null, (err, res) =>
-    {
-        if(err)
-        {
-            return err;
-        }
-
-        return res;
-    })
+function getTopics() {
+    return db.query('SELECT * FROM topic');
 }
 
-function createTopic(topicName)
-{
-    db.query('INSERT INTO topic VALUES(DEFAULT, NULL, $2::text) ON CONFLICT DO NOTHING', [topicName], (err, res) =>
-    {
-        if(err)
-        {
-            return err;
-        }
-
-        return res;
-    })
+function createTopic(topicName) {
+    return db.query('INSERT INTO topic VALUES(DEFAULT, NULL, $1::text) ON CONFLICT DO NOTHING', [topicName]);
 }
 
-function updateTopic(topicName, contentId, topicId)
-{
-    db.query('UPDATE topic SET topic_name = $1::text, content_id = $2::integer WHERE id = $3::integer', [topicName, contentId, topicId], (err, res) =>
-    {
-        if(err)
-        {
-            return err;
-        }
-
-        return res;
-    })
+function updateTopic(topicName, contentId, topicId) {
+    if (contentId && !topicName) {
+        return db.query('UPDATE topic SET content_id = $1::integer WHERE id = $2::integer', [contentId, topicId]);
+    } else if (!contentId && topicName) {
+        return db.query('UPDATE topic SET topic_name = $1::text WHERE id = $2::integer', [topicName, topicId]);
+    } else if (contentId && topicName) {
+        return db.query('UPDATE topic SET topic_name = $1::text, content_id = $2::integer WHERE id = $3::integer', [topicName, contentId, topicId]);
+    }
 }
 
-function deleteTopic(topicId)
-{
-    db.query('DELETE FROM topic WHERE id = $1::integer', [topicId], (err, res) =>
-    {
-        if(err)
-        {
-            return err;
-        }
-
-        return res;
-    })
+function deleteTopic(topicId) {
+    return db.query('DELETE FROM topic WHERE id = $1::integer', [topicId]);
 }
 
-module.exports = 
-{
+module.exports = {
     getTopic,
     getTopics,
     createTopic,

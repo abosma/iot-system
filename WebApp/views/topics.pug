@@ -1,16 +1,52 @@
-html
-    head
-        link(rel="stylesheet", href="/static/stylesheets/style.css")
-        title Topic Configuration Screen
-    body
-        h1 Topic configuration screen
+extends layout
+
+block append appended_scripts
+    script(src='/javascripts/topics/topicFunctions.js')
+
+block layout-content
+    div.view.ContentView
+        h1.Banner Topic Configuration Screen
+
+        div.NavButtons
+            form(id='addTopicForm', method='POST', action='/topics')
+                label(for='topicName') Topic Name:
+                input(id='topicName', type='text', placeholder='Insert topic name...', name='topicName', pattern='[a-zA-Z0-9]+')
+
+                button.btn.btn-primary(type='submit') Insert new topic
 
         p Topic List
-        ul
+        ul(class='list-group', id='topicListGroup')
             for topic in topicList
-                li= content.content_url
+                a(type='button', class='list-group-item list-group-item-action topicItem' data-topicid=topic.id) #{topic.topic_name}
             else
                 li There are no topics in the database.
-        
-        if errorMessage
-            h2= errorMessage
+
+        div(class='modal fade', id='topicModal', tabindex='-1', role='dialog', aria-labelledby="topicModalLabel", aria-hidden="true")
+            div(class='modal-dialog', role='document')
+                div(class='modal-content')
+                    div(class='modal-header')
+                        div(class='modal-title', id='topicName') Basic Topic Title
+                        button(type='button', class='close', data-dismiss='modal', aria-label='Close')
+                            span x
+                    div(class='modal-body')
+                        p(id='contentId') This topic does not yet have content connected to it.
+                    div(class='modal-footer')
+                        button(type='button', class='btn btn-outline-primary', id='updateTopic') Update Topic
+                        button(type='button', class='btn btn-outline-danger', id='deleteTopic') Delete Topic
+                        button(type='button', class='btn btn-outline-secondary', data-dismiss='modal') Cancel
+
+        div(class='modal fade', id='topicEditModal', tabindex='-1', role='dialog', aria-laballedby='topicEditModalLabel', aria-hidden='true')
+            div(class='modal-dialog', role='document')
+                div(class='modal-content')
+                    div(class='modal-header')
+                        div(class='modal-title') Editing Topic
+                        button(type='button', class='close', data-dismiss='modal', aria-label='Close')
+                            span x
+                    div(class='modal-body')
+                        label(for='topicName', class='col-form-label') Topic Name:
+                        input(id='topicName', class='form-control', type='text', name='topicName')
+                        label(for='contentId', class='col-form-label') Content ID:
+                        input(id='contentId', class='form-control', type='text', name='contentId')
+                    div(class='modal-footer')
+                        button(type='button', class='btn btn-outline-primary', id='saveTopicUpdate') Update Topic
+                        button(type='button', class='btn btn-outline-secondary', data-dismiss='modal') Cancel

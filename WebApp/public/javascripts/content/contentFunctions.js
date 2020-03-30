@@ -1,4 +1,4 @@
-$('#contentItem').on('click', function(event)
+$('.contentItem').on('click', function(event)
 {
     var contentId = $(this).data('contentid');
     var modalObject = $('#contentModal');
@@ -13,7 +13,7 @@ $('#contentItem').on('click', function(event)
     modalObject.find('#updateContent').on('click',
     {
         content_id: contentId
-    }, initializeEditModal);
+    }, initializeContentEditModal);
 
     modalObject.find('#deleteContent').on('click', 
     {
@@ -31,22 +31,25 @@ async function initializeContentModal(modalObject, contentId)
     modalObject.modal('show');
 }
 
-function initializeEditModal(event)
+function initializeContentEditModal(event)
 {
     var contentId = event.data.content_id;
 
     var contentModalObject = $('#contentModal');
-    var editContentModalObject = $('#editContentModal');
+    var contentEditModalObject = $('#contentEditModal');
 
-    editContentModalObject.find('#saveContentUpdate').on('click', 
+    var contentUrlInput = contentEditModalObject.find('#contentUrl');
+    var contentTypeInput = contentEditModalObject.find('#contentType');
+
+    contentEditModalObject.find('#saveContentUpdate').on('click', 
     {
         content_id: contentId,
-        content_url: editContentModalObject.find('#contentUrl').val(),
-        content_type: editContentModalObject.find('#contentType').val()
+        content_url: contentUrlInput.val(),
+        content_type: contentTypeInput.val()
     }, updateContent);
 
     contentModalObject.modal('hide');
-    editContentModalObject.modal('show');
+    contentEditModalObject.modal('show');
 }
 
 async function getContentData(contentId)

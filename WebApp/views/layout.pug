@@ -9,11 +9,19 @@ html
     meta(name="theme-color", content="#000000")
     title #{title}
     block scripts
-        script(src='/javascripts/jquery.min.js')
-        script(src='/javascripts/popper.min.js')
-        script(src='/javascripts/bootstrap.min.js')
+        script(src='/javascripts/dependencies/jquery.min.js')
+        script(src='/javascripts/dependencies/popper.min.js')
+        script(src='/javascripts/dependencies/bootstrap.min.js')
   body
-    div#root
-      block layout-content
+    div(class='container-fluid')
+      div(class='row')
+        nav(class='cold-md-2 d-none d-md-block sidebar')
+          div(class='sidebar-sticky')
+            ul(class='nav flex-column')
+              li(class='nav-item')
+                a(class='nav-link', href='/content') Content Configuration Screen
+              li(class='nav-item')
+                a(class='nav-link', href='/topics') Topic Configuration Screen
+        block layout-content
 
 block appended_scripts
