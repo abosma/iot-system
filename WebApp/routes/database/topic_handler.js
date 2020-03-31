@@ -1,4 +1,4 @@
-const db = require('./database_connector')
+const db = require('./database_connector');
 
 function getTopic(topicId) {
     return db.query('SELECT * FROM topic WHERE id = $1::integer', [topicId]);

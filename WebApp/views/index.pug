@@ -1,9 +1,12 @@
-html
-    head
-        link(rel="stylesheet", href="/static/stylesheets/style.css")
-        title #{title}
-    body
-        h1 #{message}
+extends layout
 
-        block content
-            p This page doesn't have content yet.
+block layout-content
+    div.view.ContentView
+        h1.Banner Main Page
+        if !user
+            a(href='/auth/login') Login
+            br
+            a(href='/auth/register') Register
+        else
+            p You are logged in as #{user.username}
+            a(href='/auth/logout')

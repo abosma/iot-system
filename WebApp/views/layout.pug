@@ -15,18 +15,31 @@ html
   body
     nav(class='navbar navbar-dark static-top bg-dark flex-md-nowrap p-0 shadow')
       a(class='navbar-brand col-sm-3 col-md-2 mr-0 text-light') IoT Content Management System
-      ul(class='navbar-nav px-3')
-        li(class='nav-item text-nowrap')
-          a(class='nav-link text-light') Sign out
+      if isAuthenticated
+        ul(class='navbar-nav px-3')
+          li(class='nav-item text-nowrap')
+            a(class='nav-link text-light', href='/auth/logout') Log Out
     div(class='container-fluid')
       div(class='row')
         nav(class='col-md-2 d-none d-md-block bg-light sidebar')
           div(class='sidebar-sticky')
             ul(class='nav flex-column')
               li(class='nav-item')
-                a(class='nav-link', href='/content') Content Configuration Screen
-              li(class='nav-item')
-                a(class='nav-link', href='/topics') Topic Configuration Screen
-        block layout-content
+                a(class='nav-link', href='/') Main Page
+              if !isAuthenticated
+                li(class='nav-item')
+                  a(class='nav-link', href='/auth/login') Login Screen
+                li(class='nav-item')
+                  a(class='nav-link', href='/auth/register') Register Screen
+              else
+                li(class='nav-item')
+                  a(class='nav-link', href='/content') Content Configuration Screen
+                li(class='nav-item')
+                  a(class='nav-link', href='/topics') Topic Configuration Screen
+        if !isAuthenticated
+          block layout-content
+        else
+          div(class='view ContentView')
+            p User is not logged in yet.
 
 block appended_scripts
