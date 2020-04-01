@@ -20,7 +20,7 @@ router.get('/register', function(req, res) {
     })
 })
 
-router.post('/login', passport.authenticate('local', { failureRedirect: '/auth/login', failureMessage: true }), (req, res, next) => 
+router.post('/login', passport.authenticate('local', { failureRedirect: '/', failureMessage: true }), (req, res, next) => 
 {
     res.redirect('/');
 });

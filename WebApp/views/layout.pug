@@ -36,10 +36,10 @@ html
                   a(class='nav-link', href='/content') Content Configuration Screen
                 li(class='nav-item')
                   a(class='nav-link', href='/topics') Topic Configuration Screen
-        if !isAuthenticated
-          block layout-content
+        block basic-content
+        if isAuthenticated
+          block content-authenticated
         else
-          div(class='view ContentView')
-            p User is not logged in yet.
+          block content-unauthenticated
 
 block appended_scripts

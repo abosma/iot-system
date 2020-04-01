@@ -1,14 +1,13 @@
 extends layout
 
-block layout-content
-    if !isAuthenticated
-        div.view.ContentView
-            h1.Banner Login
-            form(role='form', action='/auth/login', method='POST')
-                label(for='username') Username:
-                input(type='text', placeholder='Enter username here...', name='username')
-                label(for='password') Password:
-                input(type='password', placeholder='Enter password here...', name='password')
-                button(class='btn btn-primary', type='submit', value='Log In') Log In
-            
-            p #{error}
+block content-unauthenticated
+    div.view.ContentView
+        h1.Banner Login
+        form(role='form', action='/auth/login', method='POST')
+            label(for='username') Username:
+            input(type='text', placeholder='Enter username here...', name='username')
+            label(for='password') Password:
+            input(type='password', placeholder='Enter password here...', name='password')
+            button(class='btn btn-primary', type='submit', value='Log In') Log In
+        
+        p #{error}

@@ -1,12 +1,12 @@
 extends layout
 
-block layout-content
+block basic-content
     div.view.ContentView
         h1.Banner Main Page
-        if !user
+        if !isAuthenticated
             a(href='/auth/login') Login
             br
             a(href='/auth/register') Register
         else
-            p You are logged in as #{user.username}
+            p You are logged in as #{username}
             a(href='/auth/logout')

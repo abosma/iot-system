@@ -1,7 +1,11 @@
 const db = require('./database_connector');
 
-function getTopic(topicId) {
+function getTopicById(topicId) {
     return db.query('SELECT * FROM topic WHERE id = $1::integer', [topicId]);
+}
+
+function getTopicByName(topicName) {
+    return db.query('SELECT * FROM topic WHERE topic_name = $1::varchar', [topicName]);
 }
 
 function getTopics() {
@@ -27,7 +31,8 @@ function deleteTopic(topicId) {
 }
 
 module.exports = {
-    getTopic,
+    getTopicById,
+    getTopicByName,
     getTopics,
     createTopic,
     updateTopic,

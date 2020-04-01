@@ -5,10 +5,10 @@ const LocalStrategy = require('passport-local').Strategy;
 
 function intializePassport()
 {
-    passport.use(passportStrategy);
+    passport.use(localPassportStrategy);
 
     passport.serializeUser((user, callback) => {
-        callback(null, user.id)
+        callback(null, user.userId)
     })
 
     passport.deserializeUser((id, callback) => {
@@ -28,7 +28,7 @@ function intializePassport()
     })
 }
 
-const passportStrategy = new LocalStrategy((username, password, callback) => {
+const localPassportStrategy = new LocalStrategy((username, password, callback) => {
     user_handler.getUserByUsername(username)
     .then((data) => {
         if(data.rowCount > 0)

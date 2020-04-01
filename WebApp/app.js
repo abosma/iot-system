@@ -47,6 +47,12 @@ passport_handler.intializePassport();
 app.set('view engine', 'pug');
 
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use((req, res, next) => {
+	res.locals.isAuthenticated = req.isAuthenticated();
+	next();
+})
+
 app.use('/', indexRouter);
 app.use('/topics', topicRouter);
 app.use('/content', contentRouter);
