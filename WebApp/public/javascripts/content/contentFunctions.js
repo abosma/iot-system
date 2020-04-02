@@ -14,11 +14,6 @@ $('.contentItem').on('click', function(event)
     {
         content_id: contentId
     }, initializeContentEditModal);
-
-    modalObject.find('#deleteContent').on('click', 
-    {
-        content_id: contentId
-    }, deleteContent);
 })
 
 async function initializeContentModal(modalObject, contentId)
@@ -31,6 +26,12 @@ async function initializeContentModal(modalObject, contentId)
     modalObject.find('#contentUrl').text(contentUrl ? contentUrl : 'This content has no URL.');
     modalObject.find('#contentType').text(contentType ? contentType : 'This content has no type.');
     
+    modalObject.find('#deleteContent').on('click', 
+    {
+        content_id: contentId,
+        content_url: contentUrl
+    }, deleteContent);
+
     modalObject.modal('show');
 }
 
@@ -90,7 +91,8 @@ function deleteContent(event)
             type: 'delete',
             data: 
             {
-                contentId: event.data.content_id
+                contentId: event.data.content_id,
+                contentUrl: event.data.content_url
             }
         }
     ).done(function()

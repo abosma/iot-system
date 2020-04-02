@@ -64,7 +64,8 @@ router.put('/', async function (req, res) {
 
 router.delete('/', async function (req, res) {
     const {
-        topicId
+        topicId,
+        topicName
     } = req.body;
 
     try {

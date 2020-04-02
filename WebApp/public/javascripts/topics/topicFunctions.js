@@ -14,11 +14,6 @@ $('.topicItem').on('click', function(event)
     {
         topic_id: topicId
     }, initializeTopicEditModal);
-
-    modalObject.find('#deleteTopic').on('click', 
-    {
-        topic_id: topicId
-    }, deleteTopic);
 })
 
 async function initializeTopicModal(modalObject, topicId)
@@ -29,6 +24,12 @@ async function initializeTopicModal(modalObject, topicId)
 
     modalObject.find('#topicName').text(topicName ? topicName : 'This topic has no name.');
     modalObject.find('#contentId').text(contentId ? contentId : 'This topic has no content connected to it.');
+
+    modalObject.find('#deleteTopic').on('click', 
+    {
+        topic_id: topicId,
+        topic_name: topicName
+    }, deleteTopic);
     
     modalObject.modal('show');
 }
@@ -89,7 +90,8 @@ function deleteTopic(event)
             type: 'delete',
             data: 
             {
-                topicId: event.data.topic_id
+                topicId: event.data.topic_id,
+                topicName: event.data.topic_name
             }
         }
     ).done(function()
