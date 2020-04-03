@@ -7,17 +7,6 @@ block content-authenticated
     div.view.ContentView
         h1.Banner Content Configuration Screen
 
-        h5 Manual Content Input
-        div.NavButtons
-            form(id='addContentForm', method='POST', action='/content')
-                label(for='contentUrl') Content URL:
-                input(id='contentUrl', type='text', placeholder='test content url', name='contentUrl', pattern='[a-zA-Z0-9]+')
-                
-                label(for='contentType') Content Type:
-                input(id='contentType', type='text', placeholder='test content type', name='contentType', pattern='[a-zA-Z0-9]+')
-
-                button.btn.btn-primary(type='submit') Insert new content
-
         h5 File Content Input
         div(class='form-group')
             form(id='uploadContentForm', method='POST', action='/content/upload', enctype="multipart/form-data")

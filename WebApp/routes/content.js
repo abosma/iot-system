@@ -3,7 +3,8 @@ const router = express.Router();
 const formidable = require('formidable');
 const fs = require('fs');
 const sftp = require('ssh2-sftp-client');
-const content_handler = require('./database/async_content_handler')
+const content_handler = require('./database/content_handler')
+const passport = require('passport');
 
 require('dotenv').config();
 
@@ -16,7 +17,7 @@ const sftp_config = {
 
 const sftp_client = new sftp();
 
-router.get('/', async function (req, res) {
+router.get('/', passport.authenticate('jwt', { session: false }), async function (req, res) {
     const contentList = await content_handler.getAllContent().catch((err) => {
         res.sendStatus('500');
         throw new Error(err)
@@ -27,7 +28,7 @@ router.get('/', async function (req, res) {
     })
 })
 
-router.get('/:contentId', async function (req, res) {
+router.get('/:contentId', passport.authenticate('jwt', { session: false }), async function (req, res) {
     const contentId = req.params.contentId;
 
     const retrievedContent = await content_handler.getContentById(contentId).catch((err) => {
@@ -42,7 +43,7 @@ router.get('/:contentId', async function (req, res) {
     });
 })
 
-router.post('/', async function (req, res) {
+router.post('/', passport.authenticate('jwt', { session: false }), async function (req, res) {
     const {
         contentUrl,
         contentType
@@ -56,7 +57,7 @@ router.post('/', async function (req, res) {
     res.redirect('/content');
 })
 
-router.post('/upload', async function (req, res) {
+router.post('/upload', passport.authenticate('jwt', { session: false }), async function (req, res) {
     const fileParser = new formidable.IncomingForm();
 
     fileParser.parse(req)
@@ -68,20 +69,16 @@ router.post('/upload', async function (req, res) {
             const contentType = file.type;
             const externalPath = process.env.SFTP_UPLOAD_PATH + '\\' + file.name;
 
-            await sftp_client.connect(sftp_config).catch((err) => {
+            try {
+                await sftp_client.connect(sftp_config)
+
+                await sftp_client.fastPut(contentUrl, externalPath)
+
+                await content_handler.createContent(externalPath, contentType)
+            } catch(err) {
                 res.sendStatus(500);
                 throw new Error(err);
-            });
-
-            await sftp_client.fastPut(contentUrl, externalPath).catch((err) => {
-                res.sendStatus(500);
-                throw new Error(err);
-            });
-
-            await content_handler.createContent(externalPath, contentType).catch(err => {
-                res.sendStatus(500);
-                throw new Error(err)
-            });
+            }
 
             fs.unlink(contentUrl);
 
@@ -92,7 +89,7 @@ router.post('/upload', async function (req, res) {
         })
 })
 
-router.put('/', async function (req, res) {
+router.put('/', passport.authenticate('jwt', { session: false }), async function (req, res) {
     const {
         contentId,
         contentUrl,
@@ -107,16 +104,13 @@ router.put('/', async function (req, res) {
     res.sendStatus(200);
 })
 
-router.delete('/', async function (req, res) {
+router.delete('/', passport.authenticate('jwt', { session: false }), async function (req, res) {
     const {
         contentId,
         contentUrl
     } = req.body;
 
-    await sftp_client.delete(contentUrl).catch((err) => {
-        // Has a weird bug causing it to try and delete for one extra tick after deleting file, throwing an error.
-        continue;
-    })
+    await sftp_client.delete(contentUrl);
 
     await content_handler.deleteContent(contentId).catch((err) => {
         res.sendStatus(500);

@@ -1,15 +1,46 @@
 const db = require('./database_connector')
 
-function getContent(contentId) {
-    return db.query('SELECT * FROM content WHERE id = $1::integer', [contentId]);
+function getContentById(contentId) {
+    return new Promise((resolve, reject) => 
+    {
+        db.query('SELECT * FROM content WHERE id = $1::integer', [contentId])
+        .then((data) => {
+            const toReturnContent = data.rows[0];
+
+            resolve(toReturnContent);
+        })
+        .catch((err) => {
+            reject(err);
+        })
+    })
 }
 
 function getAllContent() {
-    return db.query('SELECT * FROM content');
+    return new Promise((resolve, reject) => 
+    {
+        db.query('SELECT * FROM content')
+        .then((data) => {
+            const toReturnContentList = data.rows;
+
+            resolve(toReturnContentList);
+        })
+        .catch((err) => {
+            reject(err);
+        })
+    })
 }
 
 function createContent(contentUrl, contentType) {
-    return db.query('INSERT INTO content VALUES(DEFAULT, $1::varchar, $2::varchar) ON CONFLICT DO NOTHING', [contentUrl, contentType])
+    return new Promise((resolve, reject) => 
+    {
+        db.query('INSERT INTO content VALUES(DEFAULT, $1::varchar, $2::varchar) ON CONFLICT DO NOTHING', [contentUrl, contentType])
+        .then(() => {
+            resolve();
+        })
+        .catch((err) => {
+            reject(err);
+        })
+    })
 }
 
 function updateContent(contentUrl, contentType, contentId) {
@@ -23,11 +54,20 @@ function updateContent(contentUrl, contentType, contentId) {
 }
 
 function deleteContent(contentId) {
-    return db.query('DELETE FROM content WHERE id = $1::integer', [contentId]);
+    return new Promise((resolve, reject) => 
+    {
+        db.query('DELETE FROM content WHERE id = $1::integer', [contentId])
+        .then(() => {
+            resolve();
+        })
+        .catch((err) => {
+            reject(err);
+        })
+    })
 }
 
 module.exports = {
-    getContent,
+    getContentById,
     getAllContent,
     createContent,
     updateContent,

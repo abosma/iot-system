@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const topic_handler = require('./database/async_topic_handler')
+const topic_handler = require('./database/topic_handler')
 const mqtt_handler = require('./mqtt/mqtt_handler');
+const passport = require('passport');
 
-router.get('/', async function (req, res) {
+router.get('/', passport.authenticate('jwt', { session: false }), async function (req, res) {
     const topicList = await topic_handler.getTopics().catch((err) => {
         res.sendStatus(500);
         throw new Error(err)
@@ -14,7 +15,7 @@ router.get('/', async function (req, res) {
     })
 })
 
-router.get('/:topicId', async function (req, res) {
+router.get('/:topicId', passport.authenticate('jwt', { session: false }), async function (req, res) {
     const topicId = req.params.topicId;
 
     const retrievedTopic = await topic_handler.getTopicById(topicId).catch((err) => {
@@ -28,7 +29,7 @@ router.get('/:topicId', async function (req, res) {
     })
 })
 
-router.post('/', async function (req, res) {
+router.post('/', passport.authenticate('jwt', { session: false }), async function (req, res) {
     const {
         topicName
     } = req.body;
@@ -43,7 +44,7 @@ router.post('/', async function (req, res) {
     res.redirect('/topics');
 })
 
-router.put('/', async function (req, res) {
+router.put('/', passport.authenticate('jwt', { session: false }), async function (req, res) {
     const {
         topicId,
         topicName,
@@ -62,7 +63,7 @@ router.put('/', async function (req, res) {
     res.sendStatus(200);
 })
 
-router.delete('/', async function (req, res) {
+router.delete('/', passport.authenticate('jwt', { session: false }), async function (req, res) {
     const {
         topicId,
         topicName

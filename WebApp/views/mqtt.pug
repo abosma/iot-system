@@ -5,10 +5,3 @@ block content-authenticated
             h1.Banner MQTT Configuration Screen
 
             div.NavButtons
-                form(id='sendMqttMessage', method='POST', action='/mqtt')
-                    label(for='topicName') Topic Name:
-                    input(id='topicName', type='text', placeholder='Insert topic name...', name='topicName', pattern='[a-zA-Z0-9]+')
-                    label(for='topicMessage') Topic Message:
-                    input(id='topicMessage', type='text', placeholder='Insert topic message...', name='topicMessage', pattern='[a-zA-Z0-9]+')
-
-                    button.btn.btn-primary(type='submit') Send MQTT Message

@@ -1,33 +1,81 @@
 const db = require('./database_connector');
 
 function getTopicById(topicId) {
-    return db.query('SELECT * FROM topic WHERE id = $1::integer', [topicId]);
+    return new Promise((resolve, reject) => {
+        db.query('SELECT * FROM topic WHERE id = $1::integer', [topicId])
+        .then((data) => {
+            const toReturnTopic = data.rows[0];
+            
+            resolve(toReturnTopic);
+        })
+        .catch((err) => {
+            reject(err);
+        })
+    })
 }
 
 function getTopicByName(topicName) {
-    return db.query('SELECT * FROM topic WHERE topic_name = $1::varchar', [topicName]);
+    return new Promise((resolve, reject) => {
+        db.query('SELECT * FROM topic WHERE topic_name = $1::varchar', [topicName])
+        .then((data) => {
+            const toReturnTopic = data.rows[0];
+            
+            resolve(toReturnTopic);
+        })
+        .catch((err) => {
+            reject(err);
+        })
+    })
 }
 
 function getTopics() {
-    return db.query('SELECT * FROM topic');
+    return new Promise((resolve, reject) => {
+        db.query('SELECT * FROM topic')
+        .then((data) => {
+            const toReturnTopicList = data.rows;
+
+            resolve(toReturnTopicList);
+        })
+        .catch((err) => {
+            reject(err);
+        })
+    })
 }
 
 function createTopic(topicName) {
-    return db.query('INSERT INTO topic VALUES(DEFAULT, NULL, $1::text) ON CONFLICT DO NOTHING', [topicName]);
+    return new Promise((resolve, reject) => {
+        db.query('INSERT INTO topic VALUES(DEFAULT, NULL, $1::varchar) ON CONFLICT DO NOTHING', [topicName])
+        .then(() => {
+            resolve();
+        })
+        .catch((err) => {
+            reject(err);
+        })
+    })
 }
 
 function updateTopic(topicName, contentId, topicId) {
-    if (contentId && !topicName) {
-        return db.query('UPDATE topic SET content_id = $1::integer WHERE id = $2::integer', [contentId, topicId]);
-    } else if (!contentId && topicName) {
-        return db.query('UPDATE topic SET topic_name = $1::text WHERE id = $2::integer', [topicName, topicId]);
-    } else if (contentId && topicName) {
-        return db.query('UPDATE topic SET topic_name = $1::text, content_id = $2::integer WHERE id = $3::integer', [topicName, contentId, topicId]);
-    }
+    return new Promise((resolve, reject) => {
+        db.query('UPDATE topic SET topic_name = $1::text, content_id = $2::integer WHERE id = $3::integer', [topicName, contentId, topicId])
+        .then(() => {
+            resolve();
+        })
+        .catch((err) => {
+            reject(err);
+        })
+    })
 }
 
 function deleteTopic(topicId) {
-    return db.query('DELETE FROM topic WHERE id = $1::integer', [topicId]);
+    return new Promise((resolve, reject) => {
+        db.query('DELETE FROM topic WHERE id = $1::integer', [topicId])
+        .then(() => {
+            resolve();
+        })
+        .catch((err) => {
+            reject(err);
+        })
+    })
 }
 
 module.exports = {
