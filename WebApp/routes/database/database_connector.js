@@ -1,13 +1,22 @@
 // Taken from https://node-postgres.com/guides/project-structure
 
 const { Pool } = require('pg');
+const bcrypt = require('bcrypt');
 
 const pool = new Pool();
 
 module.exports =
 {
-    query: (text, params = null) =>
+    query: async (text, params = null) =>
     {
-        return pool.query(text, params);
+        const statementName = await bcrypt.hash(text, 10)
+
+        const preparedStatement = {
+            name: statementName,
+            text: text,
+            values: params
+        }
+
+        return pool.query(preparedStatement);
     }
 }

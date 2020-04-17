@@ -24,6 +24,7 @@ router.get('/:topicId', passport.authenticate('jwt', { session: false }), async 
     });
 
     res.send({
+        topicId: topicId,
         topicName: retrievedTopic.topic_name,
         contentId: retrievedTopic.content_id
     })
@@ -54,6 +55,7 @@ router.put('/', passport.authenticate('jwt', { session: false }), async function
     try {
         await mqtt_handler.unsubscribeToTopic(topicName);
         await mqtt_handler.subscribeToTopic(topicName);
+
         await topic_handler.updateTopic(topicName, contentId, topicId);
     } catch (err) {
         res.sendStatus(500);

@@ -8,22 +8,21 @@ $('.topicItem').on('click', function(event)
         return event.preventDefault();
     }
 
-    initializeTopicModal(modalObject, topicId);
-
-    modalObject.find('#updateTopic').on('click',
-    {
-        topic_id: topicId
-    }, initializeTopicEditModal);
+    initializeTopicModals(modalObject, topicId);
 })
 
-async function initializeTopicModal(modalObject, topicId)
+async function initializeTopicModals(modalObject, topicId)
 {
     const topicData = await getTopicData(topicId);
-
     const { topicName, contentId } = topicData;
 
     modalObject.find('#topicName').text(topicName ? topicName : 'This topic has no name.');
     modalObject.find('#contentId').text(contentId ? contentId : 'This topic has no content connected to it.');
+
+    modalObject.find('#updateTopic').on('click',
+    {
+        topic_data: topicData
+    }, initializeTopicEditModal);
 
     modalObject.find('#deleteTopic').on('click', 
     {
@@ -36,7 +35,8 @@ async function initializeTopicModal(modalObject, topicId)
 
 function initializeTopicEditModal(event)
 {
-    var topicId = event.data.topic_id;
+    const topicData = event.data.topic_data;
+    const { topicId, topicName, contentId } = topicData;
 
     var topicModalObject = $('#topicModal');
     var topicEditModalObject = $('#topicEditModal');
@@ -44,11 +44,14 @@ function initializeTopicEditModal(event)
     var topicNameInput = topicEditModalObject.find('#topicName');
     var contentIdInput = topicEditModalObject.find('#contentId');
 
+    topicNameInput.val(topicName);
+    contentIdInput.val(contentId);
+
     topicEditModalObject.find('#saveTopicUpdate').on('click', 
     {
         topic_id: topicId,
-        topic_name: topicNameInput.val(),
-        content_id: contentIdInput.val()
+        topic_name_input: topicNameInput,
+        content_id_input: contentIdInput
     }, updateTopic);
 
     topicModalObject.modal('hide');
@@ -65,15 +68,19 @@ async function getTopicData(topicId)
 
 function updateTopic(event)
 {
+    var topic_id = event.data.topic_id;
+    var topic_name = event.data.topic_name_input.val();
+    var content_id = event.data.content_id_input.val();
+
     $.ajax(
         {
             url: '/topics',
             type: 'put',
             data: 
             {
-                topicId: event.data.topic_id,
-                topicName: event.data.topic_name,
-                contentId: event.data.content_id
+                topicId: topic_id,
+                topicName: topic_name,
+                contentId: content_id
             }
         }
     ).done(function()

@@ -54,9 +54,13 @@ function createTopic(topicName) {
     })
 }
 
-function updateTopic(topicName, contentId, topicId) {
+function updateTopic(topicName, contentId, topicId) {    
     return new Promise((resolve, reject) => {
-        db.query('UPDATE topic SET topic_name = $1::text, content_id = $2::integer WHERE id = $3::integer', [topicName, contentId, topicId])
+        db.query(
+            "UPDATE topic " + 
+            "SET topic_name = CASE WHEN ($1::varchar IS NOT NULL OR $1::varchar != '') THEN $1::varchar ELSE topic_name END, " +
+            "content_id = CASE WHEN ($2::integer IS NOT NULL) THEN CAST($2::integer AS INTEGER) ELSE content_id END " + 
+            "WHERE id = CAST($3::integer AS INTEGER)", [topicName, contentId, topicId])
         .then(() => {
             resolve();
         })
