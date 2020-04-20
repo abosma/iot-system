@@ -5,15 +5,8 @@
         "type": "node",
         "request": "launch",
         "name": "Launch Program",
+        "outputCapture": "std",
         "program": "${workspaceFolder}\\bin\\www"
-      },
-      {
-        "type": "node",
-        "request": "launch",
-        "name": "Launch Program (Nodemon)",
-        "runtimeExecutable": "nodemon",
-        "program": "${workspaceFolder}\\bin\\www",
-        "restart": true
       }
     ]
   }

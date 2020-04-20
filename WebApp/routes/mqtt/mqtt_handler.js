@@ -1,6 +1,7 @@
 const mqtt = require('async-mqtt');
 const topic_handler = require('../database/topic_handler')
 const content_handler = require('../database/content_handler')
+const logger = require('../../logging/winston')
 
 // Loads environment variables from .env file
 require('dotenv').config();
@@ -23,12 +24,12 @@ var connectWithRetry = async function()
         const connectedClient = await mqtt.connectAsync(serverIp, clientOptions, false);
         client = connectedClient;
 
-        console.info('MQTT: Connected to server.')
+        logger.debug('MQTT: Connected to server.')
 
         initializeMessageHandler();
     }
     catch (error) {
-        console.error('MQTT: Failed to connect to server, retrying in 5 seconds...');
+        logger.error('MQTT: Failed to connect to server, retrying in 5 seconds...');
         setTimeout(connectWithRetry, 5000);
     }
 }
@@ -57,7 +58,7 @@ function initializeMessageHandler()
         }
     })
 
-    console.info('MQTT: Initialized message handler.');
+    logger.debug('MQTT: Initialized message handler.');
 }
 // TODO move connection logic to different file //
 

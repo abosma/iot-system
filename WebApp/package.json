@@ -29,7 +29,8 @@
     "pug": "^2.0.4",
     "qrcode": "^1.4.4",
     "ssh2": "^0.8.9",
-    "ssh2-sftp-client": "^5.1.2"
+    "ssh2-sftp-client": "^5.1.2",
+    "winston": "^3.2.1"
   },
   "devDependencies": {}
 }

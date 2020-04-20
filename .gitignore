@@ -1,6 +1,6 @@
 node_modules
 /mosquitto
-/*.env
+*.env
 /pgsql/symbols
 /pgsql/bin
 /pgsql/doc
@@ -11,3 +11,4 @@ node_modules
 /pgsql/share
 /pgsql/StackBuilder
 /webapp/.env
+*.log
