@@ -1,66 +1,43 @@
-const mqtt = require('async-mqtt');
+const mqtt_connector = require("./mqtt_connector");
 const topic_handler = require('../database/topic_handler')
 const content_handler = require('../database/content_handler')
 const logger = require('../../logging/winston')
 
-// Loads environment variables from .env file
-require('dotenv').config();
-
-// TODO move connection logic to different file //
-const serverIp = process.env.MQTT_HOST + ':' + process.env.MQTT_PORT;
-
-const clientOptions = 
-{
-    clientId: process.env.MQTT_CLIENTNAME,
-    connectTimeout: 5000,
-    clean: false
-}
-
 var client = null;
 
-var connectWithRetry = async function() 
+async function initializeHandler()
 {
-    try {
-        const connectedClient = await mqtt.connectAsync(serverIp, clientOptions, false);
-        client = connectedClient;
-
-        logger.debug('MQTT: Connected to server.')
-
-        initializeMessageHandler();
-    }
-    catch (error) {
-        logger.error('MQTT: Failed to connect to server, retrying in 5 seconds...');
-        setTimeout(connectWithRetry, 5000);
-    }
+    client = await mqtt_connector.connectWithRetry();
+    initializeMessageHandler(client);
 }
 
-connectWithRetry();
+initializeHandler();
 
-function initializeMessageHandler()
+function initializeMessageHandler(client)
 {
     client.on('message', async function (topic, message) {
         const messageObject = JSON.parse(message);
     
         if (messageObject.client != 'System') {
-            const topicData = await topic_handler.getTopicByName(topic).catch((err) => console.log(err));
-            const contentData = await content_handler.getContentById(topicData.content_id).catch((err) => console.log(err));
+            const topicData = await topic_handler.getTopicByName(topic).catch((err) => logger.error(err));
+            const contentData = await content_handler.getContentById(topicData.content_id).catch((err) => logger.error(err));
     
             const toReturnContentData = {
                 client: 'System',
                 message: '200',
+
                 contentUrl: contentData.content_url,
                 contentType: contentData.content_type
             }
     
             var returnMessage = JSON.stringify(toReturnContentData);
     
-            await client.publish(topic, returnMessage).catch((err) => console.log(err));
+            await client.publish(topic, returnMessage).catch((err) => logger.error(err));
         }
     })
 
     logger.debug('MQTT: Initialized message handler.');
 }
-// TODO move connection logic to different file //
 
 function subscribeToTopic(topic) {
     return new Promise((resolve, reject) => {
