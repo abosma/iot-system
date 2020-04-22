@@ -1,17 +1,42 @@
-const mqtt_connector = require("./mqtt_connector");
 const topic_handler = require('../database/topic_handler')
 const content_handler = require('../database/content_handler')
 const logger = require('../../logging/winston')
+const mqtt = require('async-mqtt');
+
+require('dotenv').config();
+
+// Separate the connection code from handler code
+const connectionInfo = 
+{
+    serverIp: process.env.MQTT_HOST + ':' + process.env.MQTT_PORT,
+    clientOptions:
+    {
+        clientId: process.env.MQTT_CLIENTNAME,
+        connectTimeout: 5000,
+        clean: false
+    }
+}
 
 var client = null;
 
-async function initializeHandler()
+async function connectWithRetry()
 {
-    client = await mqtt_connector.connectWithRetry();
-    initializeMessageHandler(client);
-}
+    try {
+        const connectedClient = await mqtt.connectAsync(connectionInfo.serverIp, connectionInfo.clientOptions, false);
 
-initializeHandler();
+        client = connectedClient;
+
+        logger.debug('MQTT: Connected to server.')
+
+        initializeMessageHandler(connectedClient);
+
+        checkIfConnected();
+    }
+    catch (error) {
+        logger.error('MQTT: Failed to connect to server, retrying in 5 seconds. Error: ' + error);
+        setTimeout(connectWithRetry, 5000);
+    }
+}
 
 function initializeMessageHandler(client)
 {
@@ -24,6 +49,7 @@ function initializeMessageHandler(client)
     
             const toReturnContentData = {
                 client: 'System',
+                
                 message: '200',
 
                 contentUrl: contentData.content_url,
@@ -38,6 +64,22 @@ function initializeMessageHandler(client)
 
     logger.debug('MQTT: Initialized message handler.');
 }
+
+function checkIfConnected()
+{
+    if(!client || client.connected == false && client.reconnecting == false)
+    {
+        logger.error("Lost connection to MQTT server, retrying.")
+        connectWithRetry();
+    }
+    else
+    {
+        setTimeout(checkIfConnected, 10000);
+    }
+}
+
+connectWithRetry();
+// Separate the connection code from handler code
 
 function subscribeToTopic(topic) {
     return new Promise((resolve, reject) => {
