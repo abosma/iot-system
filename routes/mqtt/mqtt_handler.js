@@ -117,6 +117,11 @@ function publishMessageToTopic(topic, message) {
     });
 }
 
+function getConnectionStatus()
+{
+    return client != null && client.connected;
+}
+
 function disconnectClient() {
     return new Promise((resolve, reject) => {
         client.end()
@@ -133,5 +138,6 @@ module.exports = {
     subscribeToTopic,
     unsubscribeToTopic,
     publishMessageToTopic,
+    getConnectionStatus,
     disconnectClient
 }

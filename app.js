@@ -12,7 +12,7 @@ const indexRouter = require('./routes/index');
 const topicRouter = require('./routes/topics');
 const contentRouter = require('./routes/content');
 const authRouter = require('./routes/auth');
-const mqttRouter = require('./routes/mqtt');
+const statusRouter = require('./routes/status');
 
 // Loads environment variables from .env file
 require('dotenv').config();
@@ -61,7 +61,7 @@ app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/topics', topicRouter);
 app.use('/content', contentRouter);
-app.use('/mqtt', mqttRouter);
+app.use('/status', statusRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
