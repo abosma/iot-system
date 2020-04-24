@@ -25,7 +25,7 @@ client.on('connect', () => {
 })
 
 client.on('reconnect', () => {
-    logger.error('MQTT: Disconnected or not yet connected to the server, (re)connecting...');
+    logger.debug('MQTT: Disconnected or not yet connected to the server, (re)connecting...');
 })
 
 client.on('error', (err) => {
