@@ -20,7 +20,16 @@ async function query(text, params = null)
 
 function getConnectionStatus()
 {
-    return !pool.ending || !pool.ended;
+    return new Promise((resolve, reject) => {
+        pool.connect()
+        .then(client => {
+            client.release();
+            resolve(true);
+        })
+        .catch(error => {
+            resolve(false);
+        })
+    })
 }
 
 module.exports =
