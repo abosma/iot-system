@@ -2,6 +2,11 @@ const mqtt = require('mqtt');
 const logger = require('../../logging/winston')
 const topic_handler = require('../database/topic_handler')
 const content_handler = require('../database/content_handler')
+const fs = require('fs');
+
+const key = fs.readFileSync(__dirname + '/../../certs/mqtt_srv.key');
+const cert = fs.readFileSync(__dirname + '/../../certs/mqtt_srv.crt');
+const ca = fs.readFileSync(__dirname + '/../../certs/mqtt_ca.crt');
 
 require('dotenv').config();
 
@@ -11,8 +16,14 @@ const connectionInfo =
     clientOptions:
     {
         clientId: process.env.MQTT_CLIENTNAME,
+        protocol: 'mqtts',
+        protocolId: 'MQTT',
+        ca,
+        key,
+        cert,
         connectTimeout: 5000,
-        clean: false
+        clean: false,
+        rejectUnauthorized: false
     }
 }
 
