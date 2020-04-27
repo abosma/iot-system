@@ -2,8 +2,27 @@
 
 const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
+const fs = require('fs');
 
-const pool = new Pool();
+const key = fs.readFileSync(__dirname + '/../../certs/server.key');
+const cert = fs.readFileSync(__dirname + '/../../certs/server.cert')
+
+const config = 
+{
+    user: process.env.PGUSER,
+    password: process.env.PGPASSWORD,
+    host: process.env.PGHOST,
+    port: process.env.PGPORT,
+    database: process.env.PGDATABASE,
+    ssl :
+    {
+        rejectUnauthorized: false,
+        key,
+        cert
+    }
+}
+
+const pool = new Pool(config);
 
 async function query(text, params = null)
 {
