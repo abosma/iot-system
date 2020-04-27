@@ -33,13 +33,15 @@ app.use(cookieParser());
 
 const expressSessionOptions = {
 	secret: process.env.HASH_SECRET,
-	cookie: {},
+	cookie: {
+		path: '/',
+		httpOnly: true,
+		secure: true,
+		maxAge: null,
+		sameSite: true
+	},
 	resave: false,
 	saveUninitialized: false
-}
-
-if (app.get('env') === 'production') {
-	expressSessionOptions.cookie.secure = true;
 }
 
 app.use(expressSession(expressSessionOptions))
