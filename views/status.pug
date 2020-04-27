@@ -1,0 +1,26 @@
+extends layout
+
+block basic-content
+    div.view.ContentView
+        h1.Banner Connection Status
+
+        if mqttStatus == true && databaseStatus == true
+            div(class='d-flex justify-content-center bg-success rounded shadow-sm')
+                a(class='text-white') Connected to all servers
+        else
+            div(class='d-flex justify-content-center bg-danger rounded shadow-sm')
+                a(class='text-white') Not connected to all servers
+
+        div(class='d-flex flex-column align-items-center p-3 bg-white rounded shadow-sm')
+            div(class='p-2')
+                a MQTT Server 
+                if mqttStatus == true
+                    span(class='badge badge-success') Connected
+                else
+                    span(class='badge badge-danger') Disconnected
+            div(class='p-2')
+                a Database Server 
+                if databaseStatus == true
+                    span(class='badge badge-success') Connected
+                else
+                    span(class='badge badge-danger') Disconnected
