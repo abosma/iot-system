@@ -43,10 +43,11 @@ router.post('/login', (req, res, next) =>
 
             const jsonToken = jsonwebtoken.sign(user, process.env.HASH_SECRET);
             
-            res.cookie('jwt', jsonToken, 
-            { 
-                httpOnly: true, 
-                secure: false
+            res.cookie('jwt', jsonToken,
+            {
+                httpOnly: true,
+                secure: true,
+                sameSite: true
             });
 
             res.redirect('/');

@@ -11,3 +11,5 @@ node_modules
 /pgsql/share
 /pgsql/StackBuilder
 *.log
+*.cert
+*.key
