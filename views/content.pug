@@ -3,10 +3,14 @@ extends layout
 block append appended_scripts
     script(src='/javascripts/content/contentFunctions.js')
 
+block navbar-name
+    a(class='navbar-brand') Content
+
+block title
+    title Content - IoT System
+
 block content-authenticated
     div.view.ContentView
-        h1.Banner Content Configuration Screen
-
         h5 File Content Input
         div(class='form-group')
             form(id='uploadContentForm', method='POST', action='/content/upload', enctype="multipart/form-data")

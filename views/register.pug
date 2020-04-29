@@ -1,8 +1,13 @@
 extends layout
 
+block title
+    title Register - IoT System
+
+block navbar-name
+    a(class='navbar-brand') Register
+
 block content-unauthenticated
     div.view.ContentView
-        h1.Banner Register
         form(role='form', action='/auth/register', method='POST')
             label(for='username') Username:
             input(type='text', placeholder='Enter username here...', name='username')

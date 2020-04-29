@@ -3,10 +3,14 @@ extends layout
 block append appended_scripts
     script(src='/javascripts/topics/topicFunctions.js')
 
+block title
+    title Topics - IoT System
+
+block navbar-name
+    a(class='navbar-brand') Topics
+
 block content-authenticated
     div.view.ContentView
-        h1.Banner Topic Configuration Screen
-
         div.NavButtons
             form(id='addTopicForm', method='POST', action='/topics')
                 label(for='topicName') Topic Name:

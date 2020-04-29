@@ -1,8 +1,13 @@
 extends layout
 
+block title
+    title Login - IoT System
+
+block navbar-name
+    a(class='navbar-brand') Login
+
 block content-unauthenticated
     div.view.ContentView
-        h1.Banner Login
         form(role='form', action='/auth/login', method='POST')
             label(for='username') Username:
             input(type='text', placeholder='Enter username here...', name='username')

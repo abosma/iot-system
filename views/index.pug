@@ -1,12 +1,17 @@
 extends layout
 
+block title
+    title Home - IoT System
+
+block navbar-name
+    a(class='navbar-brand') Home
+
 block basic-content
     div.view.ContentView
-        h1.Banner Main Page
         if !isAuthenticated
-            a(href='/auth/login') Login
-            br
-            a(href='/auth/register') Register
+            p Welcome to the IoT system, to use this system you need to be logged in.
+            p Please #[a(href='/auth/login') Log In] or #[a(href='/auth/register') Register].
+            p Connection status of the system to required external systems can be found on the #[a(href='/status') Status] page.
         else
             p You are logged in as #{username}
             a(href='/auth/logout')

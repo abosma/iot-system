@@ -1,9 +1,13 @@
 extends layout
 
+block title
+    title Status - IoT System
+
+block navbar-name
+    a(class='navbar-brand') Connection Status
+
 block basic-content
     div.view.ContentView
-        h1.Banner Connection Status
-
         if mqttStatus == true && databaseStatus == true
             div(class='d-flex justify-content-center bg-success rounded shadow-sm')
                 a(class='text-white') Connected to all servers
