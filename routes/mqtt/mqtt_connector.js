@@ -5,8 +5,8 @@ const content_handler = require('../database/content_handler')
 const fs = require('fs');
 
 const key = fs.readFileSync(__dirname + '/../../certs/mqtt_srv.key');
-const cert = fs.readFileSync(__dirname + '/../../certs/mqtt_srv.crt');
-const ca = fs.readFileSync(__dirname + '/../../certs/mqtt_ca.crt');
+const cert = fs.readFileSync(__dirname + '/../../certs/mqtt_srv.cert');
+const ca = fs.readFileSync(__dirname + '/../../certs/mqtt_ca.cert');
 
 require('dotenv').config();
 
