@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const topic_handler = require('./database/topic_handler')
-const mqtt_handler = require('./mqtt/mqtt_handler');
+const topic_handler = require('../data/topic_handler')
+const mqtt_handler = require('../business/mqtt/mqtt_handler');
 const passport = require('passport');
 
 router.get('/', passport.authenticate('jwt', { session: false }), async function (req, res) {

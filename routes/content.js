@@ -3,7 +3,7 @@ const router = express.Router();
 const formidable = require('formidable');
 const fs = require('fs');
 const sftp = require('ssh2-sftp-client');
-const content_handler = require('./database/content_handler')
+const content_handler = require('../data/content_handler')
 const passport = require('passport');
 
 require('dotenv').config();

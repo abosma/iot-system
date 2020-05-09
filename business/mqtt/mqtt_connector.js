@@ -1,7 +1,7 @@
 const mqtt = require('mqtt');
 const logger = require('../../logging/winston')
-const topic_handler = require('../database/topic_handler')
-const content_handler = require('../database/content_handler')
+const topic_handler = require('../../data/topic_handler')
+const content_handler = require('../../data/content_handler')
 const fs = require('fs');
 
 const key = fs.readFileSync(__dirname + '/../../certs/mqtt_srv.key');
