@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
-const user_handler = require('../data/user_handler');
+const user_handler = require('../business/user_handler');
 const bcrypt = require('bcrypt');
 const jsonwebtoken = require('jsonwebtoken');
 

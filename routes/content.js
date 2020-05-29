@@ -1,21 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const formidable = require('formidable');
-const fs = require('fs');
-const sftp = require('ssh2-sftp-client');
-const content_handler = require('../data/content_handler')
+const content_handler = require('../business/content_handler')
 const passport = require('passport');
 
 require('dotenv').config();
-
-const sftp_config = {
-    host: process.env.SFTP_HOST,
-    port: 22,
-    username: process.env.SFTP_USERNAME,
-    password: process.env.SFTP_PASSWORD
-}
-
-const sftp_client = new sftp();
 
 router.get('/', passport.authenticate('jwt', { session: false }), async function (req, res) {
     const contentList = await content_handler.getAllContent().catch((err) => {
@@ -58,35 +46,12 @@ router.post('/', passport.authenticate('jwt', { session: false }), async functio
 })
 
 router.post('/upload', passport.authenticate('jwt', { session: false }), async function (req, res) {
-    const fileParser = new formidable.IncomingForm();
+    await content_handler.uploadContent(req).catch((err) => {
+        res.sendStatus(500);
+        throw new Error(err);
+    })
 
-    fileParser.parse(req)
-        .on('fileBegin', (name, file) => {
-            file.path = __dirname + '/uploads/' + file.name;
-        })
-        .on('file', async (name, file) => {
-            const contentUrl = file.path;
-            const contentType = file.type;
-            const externalPath = process.env.SFTP_UPLOAD_PATH + '\\' + file.name;
-
-            try {
-                await sftp_client.connect(sftp_config)
-
-                await sftp_client.fastPut(contentUrl, externalPath)
-
-                await content_handler.createContent(externalPath, contentType)
-            } catch(err) {
-                res.sendStatus(500);
-                throw new Error(err);
-            }
-
-            fs.unlink(contentUrl);
-
-            res.redirect('/content');
-        })
-        .on('error', (err) => {
-            throw new Error(err);
-        })
+    res.sendStatus(200);
 })
 
 router.put('/', passport.authenticate('jwt', { session: false }), async function (req, res) {

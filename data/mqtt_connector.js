@@ -1,7 +1,7 @@
 const mqtt = require('mqtt');
-const logger = require('../../logging/winston')
-const topic_handler = require('../../data/topic_handler')
-const content_handler = require('../../data/content_handler')
+const logger = require('../logging/winston')
+const topic_handler = require('../business/topic_handler')
+const content_handler = require('../business/content_handler')
 const fs = require('fs');
 
 const key = fs.readFileSync(__dirname + '/../../certs/mqtt_srv.key');
@@ -10,7 +10,7 @@ const ca = fs.readFileSync(__dirname + '/../../certs/mqtt_ca.cert');
 
 require('dotenv').config();
 
-const connectionInfo = 
+const mqtt_connection_config = 
 {
     serverIp: process.env.MQTT_HOST + ':' + process.env.MQTT_PORT,
     clientOptions:
@@ -27,7 +27,7 @@ const connectionInfo =
     }
 }
 
-var client = mqtt.connect(connectionInfo.serverIp, connectionInfo.clientOptions);
+var client = mqtt.connect(mqtt_connection_config.serverIp, mqtt_connection_config.clientOptions);
 
 client.on('connect', () => {
     logger.debug('MQTT: Connected to server.');
@@ -75,7 +75,13 @@ function messageIsFromSystem(clientString)
     return clientString != null && clientString == 'System';
 }
 
+function getConnectionStatus()
+{
+    return client != null && client.connected;
+}
+
 module.exports = 
 {
-    client
+    client,
+    getConnectionStatus
 }

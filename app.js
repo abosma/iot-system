@@ -6,7 +6,7 @@ const morgan = require('morgan');
 const winston = require('./logging/winston');
 const expressSession = require('express-session');
 const passport = require('passport');
-const passport_handler = require('./business/authentication/passport_handler');
+const passport_handler = require('./authentication/passport_handler');
 
 const indexRouter = require('./routes/index');
 const topicRouter = require('./routes/topics');
