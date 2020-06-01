@@ -5,7 +5,7 @@ const sftp_config = {
     port: 22,
     username: process.env.SFTP_USERNAME,
     password: process.env.SFTP_PASSWORD,
-    retries: 1
+    retries: 0
 }
 
 const sftp_client = new sftp();
@@ -27,9 +27,8 @@ function getConnectionStatus()
 {
     // It resolves false instead of rejecting, this is so routes/status.js can easily render the status
     return new Promise((resolve, reject) => {
-        sftp_client.connect(sftp_config)
-        .then(async () => {
-            await sftp_client.end();
+        sftp_client.cwd()
+        .then(async (directory) => {
             resolve(true);
         })
         .catch(error => {

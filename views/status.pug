@@ -23,6 +23,12 @@ block basic-content
                 else
                     span(class='badge badge-danger') Disconnected
             div(class='p-2')
+                a SFTP Server 
+                if sftpStatus == true
+                    span(class='badge badge-success') Connected
+                else
+                    span(class='badge badge-danger') Disconnected
+            div(class='p-2')
                 a Database Server 
                 if databaseStatus == true
                     span(class='badge badge-success') Connected

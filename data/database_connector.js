@@ -42,9 +42,8 @@ function getConnectionStatus()
 {
     // It resolves false instead of rejecting, this is so routes/status.js can easily render the status
     return new Promise((resolve, reject) => {
-        pool.connect()
-        .then(client => {
-            client.release();
+        pool.query('SELECT NOW()')
+        .then(res => {
             resolve(true);
         })
         .catch(error => {
