@@ -62,13 +62,13 @@ function uploadContent(formRequest)
                 const externalPath = process.env.SFTP_UPLOAD_PATH + '\\' + file.name;
 
                 try {
-                    await sftp_connector.sftp_client.connect(sftp_config)
+                    var connectedClient = await sftp_connector.getConnectedClient();
 
-                    await sftp_connector.sftp_client.fastPut(contentUrl, externalPath)
+                    await connectedClient.fastPut(contentUrl, externalPath);
 
-                    await this.createContent(externalPath, contentType)
-                    
-                    await sftp_connector.sftp_client.end();
+                    await this.createContent(externalPath, contentType);
+
+                    await connectedClient.end();
 
                     resolve();
                 } catch(err) {
@@ -77,12 +77,12 @@ function uploadContent(formRequest)
 
                 fs.unlink(contentUrl);
 
-                res.redirect('/content');
+                resolve();
             })
             .on('error', (err) => {
                 reject(err);
             })
-        })
+    })
 }
 
 function deleteContent(contentId) {

@@ -46,7 +46,9 @@ router.post('/', passport.authenticate('jwt', { session: false }), async functio
 })
 
 router.post('/upload', passport.authenticate('jwt', { session: false }), async function (req, res) {
-    await content_handler.uploadContent(req).catch((err) => {
+    const formRequest = req;
+    
+    await content_handler.uploadContent(formRequest).catch((err) => {
         res.sendStatus(500);
         throw new Error(err);
     })

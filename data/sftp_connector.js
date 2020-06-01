@@ -9,12 +9,25 @@ const sftp_config = {
 
 const sftp_client = new sftp();
 
+function getConnectedClient()
+{
+    return new Promise((resolve, reject) => {
+        sftp_client.connect(sftp_config)
+        .then(() => {
+            resolve(sftp_client);
+        })
+        .catch(error => {
+            reject(error);
+        })
+    })
+}
+
 function getConnectionStatus()
 {
     // It resolves false instead of rejecting, this is so routes/status.js can easily render the status
     return new Promise((resolve, reject) => {
         sftp_client.connect(sftp_config)
-        .then(() => {
+        .then(async () => {
             await sftp_client.end();
             resolve(true);
         })
@@ -26,6 +39,6 @@ function getConnectionStatus()
 
 module.exports =
 {
-    sftp_client,
+    getConnectedClient,
     getConnectionStatus
 }

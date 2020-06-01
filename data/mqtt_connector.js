@@ -1,12 +1,12 @@
-const mqtt = require('mqtt');
+const mqtt = require('async-mqtt');
 const logger = require('../logging/winston')
 const topic_handler = require('../business/topic_handler')
 const content_handler = require('../business/content_handler')
 const fs = require('fs');
 
-const key = fs.readFileSync(__dirname + '/../../certs/mqtt_srv.key');
-const cert = fs.readFileSync(__dirname + '/../../certs/mqtt_srv.cert');
-const ca = fs.readFileSync(__dirname + '/../../certs/mqtt_ca.cert');
+const key = fs.readFileSync(__dirname + '/../certs/mqtt_srv.key');
+const cert = fs.readFileSync(__dirname + '/../certs/mqtt_srv.cert');
+const ca = fs.readFileSync(__dirname + '/../certs/mqtt_ca.cert');
 
 require('dotenv').config();
 
