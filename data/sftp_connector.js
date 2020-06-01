@@ -4,7 +4,8 @@ const sftp_config = {
     host: process.env.SFTP_HOST,
     port: 22,
     username: process.env.SFTP_USERNAME,
-    password: process.env.SFTP_PASSWORD
+    password: process.env.SFTP_PASSWORD,
+    retries: 1
 }
 
 const sftp_client = new sftp();

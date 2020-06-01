@@ -1,7 +1,7 @@
 const database_connector = require('../data/database_connector')
 const sftp_connector = require('../data/sftp_connector')
 const formidable = require('formidable');
-const fs = require('fs');
+const fs = require('fs').promises;
 
 function getContentById(contentId) {
     return new Promise((resolve, reject) => 
@@ -53,8 +53,17 @@ function uploadContent(formRequest)
         const fileParser = new formidable.IncomingForm();
 
         fileParser.parse(formRequest)
-            .on('fileBegin', (name, file) => {
-                file.path = __dirname + '/uploads/' + file.name;
+            .on('fileBegin', async (name, file) => {
+                var uploadFolder = __dirname + '/uploads/';
+                var expectedTempFileLocation = uploadFolder + file.name;
+
+                // If folder doesn't exist, create folder
+                await fs.stat(uploadFolder)
+                .catch(async (err) => 
+                    await fs.mkdir(uploadFolder)
+                );
+
+                file.path = expectedTempFileLocation;
             })
             .on('file', async (name, file) => {
                 const contentUrl = file.path;
@@ -75,9 +84,11 @@ function uploadContent(formRequest)
                     reject(err);
                 }
 
-                fs.unlink(contentUrl);
-
-                resolve();
+                fs.unlink(contentUrl)
+                .then(() => {
+                    resolve();
+                })
+                .catch((err) => reject(err));
             })
             .on('error', (err) => {
                 reject(err);
