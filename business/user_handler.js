@@ -1,4 +1,4 @@
-const db = require('./database_connector');
+const db = require('../data/database_connector');
 
 function getUserById(userId)
 {

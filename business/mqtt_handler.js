@@ -1,4 +1,4 @@
-const client = require('./mqtt_connector').client;
+const client = require('../data/mqtt_connector').client;
 
 function subscribeToTopic(topic) {
     return new Promise((resolve, reject) => {
@@ -36,11 +36,6 @@ function publishMessageToTopic(topic, message) {
     });
 }
 
-function getConnectionStatus()
-{
-    return client != null && client.connected;
-}
-
 function disconnectClient() {
     return new Promise((resolve, reject) => {
         client.end()
@@ -57,6 +52,5 @@ module.exports = {
     subscribeToTopic,
     unsubscribeToTopic,
     publishMessageToTopic,
-    getConnectionStatus,
     disconnectClient
 }
