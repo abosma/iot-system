@@ -1,6 +1,6 @@
 const passport = require('passport')
 const bcrypt = require('bcrypt');
-const user_handler = require('../../data/user_handler');
+const user_handler = require('../business/user_handler');
 const passportJWT = require('passport-jwt');
 const extractJWT = passportJWT.ExtractJwt;
 const LocalStrategy = require('passport-local').Strategy;
@@ -68,7 +68,7 @@ const localPassportStrategy = new LocalStrategy(async (username, password, callb
             })
         }
     } catch (err) {
-        callback(err);
+        return callback(err);
     }
 })
 
