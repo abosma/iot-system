@@ -45,6 +45,11 @@ router.post('/', passport.authenticate('jwt', { session: false }), async functio
 router.post('/upload', passport.authenticate('jwt', { session: false }), async function (req, res, next) {
     const formRequest = req;
     
+    if(!formRequest.files)
+    {
+        return next(new Error('No file has been attached for upload, please attach a file before uploading.'));
+    }
+
     await content_handler.uploadContent(formRequest).catch((err) => {
         return next(new Error('Something went wrong uploading the content, check the file server status and try again.'));
     })
