@@ -7,12 +7,10 @@ block navbar-name
     a(class='navbar-brand') Register
 
 block content-unauthenticated
-    div.view.ContentView
-        form(role='form', action='/auth/register', method='POST')
-            label(for='username') Username:
-            input(type='text', placeholder='Enter username here...', name='username')
-            label(for='password') Password:
-            input(type='password', placeholder='Enter password here...', name='password')
-            button(class='btn btn-primary', type='submit', value='Log In') Register
-        
-        p #{error}
+    div#contentView(class='text-center align-items-center')
+        form(class='form-register' role='form', action='/auth/register', method='POST')
+            img(class='mb-4' width='144px' height='144px' src='/images/icon.png')
+            h1(class='h3 mb-3 font-weight-normal') Register Form
+            input(class='mx-auto form-control col-9 mt-3' type='text', placeholder='Username', name='username')
+            input(class='mx-auto form-control col-9 mt-3' type='password', placeholder='Password', name='password')
+            button(class='btn btn-primary col-9 mt-3', type='submit', value='Register') Register

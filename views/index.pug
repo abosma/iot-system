@@ -13,5 +13,6 @@ block basic-content
             p Please #[a(href='/auth/login') Log In] or #[a(href='/auth/register') Register].
             p Connection status of the system to required external systems can be found on the #[a(href='/status') Status] page.
         else
-            p You are logged in as #{username}
-            a(href='/auth/logout')
+            p Welcome to the IoT system. Here you can create topics, upload content and connect topics to content for use by the IoT presentation devices.
+            p Content can be uploaded and deleted on the #[a(href='/content') Content] page.
+            p Topics can be created on the #[a(href='/topics') Topics] page. Here you can also connect Content to Topics.

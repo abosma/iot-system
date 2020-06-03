@@ -1,8 +1,20 @@
 body {
-  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
+}
+
+.form-login, 
+.form-register {
+  width: 100%;
+  max-width: 40%;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.feather-24 {
+  width: 24px;
+  height: 24px;
 }
