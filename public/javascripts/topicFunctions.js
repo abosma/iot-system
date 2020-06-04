@@ -14,10 +14,10 @@ $('.topicItem').on('click', function(event)
 async function initializeTopicModals(modalObject, topicId)
 {
     const topicData = await getTopicData(topicId);
-    const { topicName, contentId } = topicData;
+    const { topicName, contentUrl } = topicData;
 
     modalObject.find('#topicName').text(topicName ? topicName : 'This topic has no name.');
-    modalObject.find('#contentId').text(contentId ? contentId : 'This topic has no content connected to it.');
+    modalObject.find('#contentId').text(contentUrl ? contentUrl : 'This topic has no content connected to it.');
 
     modalObject.find('#updateTopic').on('click',
     {
@@ -36,7 +36,7 @@ async function initializeTopicModals(modalObject, topicId)
 function initializeTopicEditModal(event)
 {
     const topicData = event.data.topic_data;
-    const { topicId, topicName, contentId } = topicData;
+    const { topicId, topicName, contentId, contentUrl } = topicData;
 
     var topicModalObject = $('#topicModal');
     var topicEditModalObject = $('#topicEditModal');
@@ -45,7 +45,7 @@ function initializeTopicEditModal(event)
     var contentIdInput = topicEditModalObject.find('#contentId');
 
     topicNameInput.val(topicName);
-    contentIdInput.val(contentId);
+    contentIdInput.find('option[value="' + contentId + '"]').prop('selected', true);
 
     topicEditModalObject.find('#saveTopicUpdate').on('click', 
     {

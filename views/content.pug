@@ -10,12 +10,13 @@ block title
     title Content - IoT System
 
 block content-authenticated
-    div.view.ContentView
-        h5 File Content Input
-        div(class='form-group')
+    div#contentView
+        div(class='form-group float-right')
             form(id='uploadContentForm', method='POST', action='/content/upload', enctype="multipart/form-data")
                 input(id='contentFile', type='file', class='form-control-file', name='contentFile')
-                button(class='btn btn-primary', type='submit') Upload Content
+                button(class='btn btn-primary', type='submit')
+                    span(class='feather-24 mr-2' data-feather='plus')
+                    | Upload Content
 
         p Content List
         ul(class='list-group', id='contentListGroup')

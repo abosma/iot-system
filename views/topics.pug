@@ -10,13 +10,15 @@ block navbar-name
     a(class='navbar-brand') Topics
 
 block content-authenticated
-    div.view.ContentView
-        div.NavButtons
+    div#contentView
+        div(class='NavButtons float-right')
             form(id='addTopicForm', method='POST', action='/topics')
                 label(for='topicName') Topic Name:
                 input(id='topicName', type='text', placeholder='Insert topic name...', name='topicName', pattern='[a-zA-Z0-9]+')
 
-                button.btn.btn-primary(type='submit') Insert new topic
+                button.btn.btn-primary(type='submit') 
+                    span(class='feather-24 mr-2' data-feather='plus')
+                    | New topic
 
         p Topic List
         ul(class='list-group', id='topicListGroup')
@@ -26,13 +28,16 @@ block content-authenticated
                 li There are no topics in the database.
 
         div(class='modal fade', id='topicModal', tabindex='-1', role='dialog', aria-labelledby="topicModalLabel", aria-hidden="true")
-            div(class='modal-dialog', role='document')
+            div(class='modal-dialog modal-dialog-centered', role='document')
                 div(class='modal-content')
                     div(class='modal-header')
-                        div(class='modal-title', id='topicName') Basic Topic Title
+                        div(class='modal-title') #[h4 Topic Information]
                         button(type='button', class='close', data-dismiss='modal', aria-label='Close')
                             span x
                     div(class='modal-body')
+                        h5 Topic Name
+                        p(id='topicName') Basic Topic Title
+                        h5 Topic Content
                         p(id='contentId') This topic has no content connected to it.
                     div(class='modal-footer')
                         button(type='button', class='btn btn-outline-primary', id='updateTopic') Update Topic
@@ -49,8 +54,10 @@ block content-authenticated
                     div(class='modal-body')
                         label(for='topicName', class='col-form-label') Topic Name:
                         input(id='topicName', class='form-control', type='text', name='topicName')
-                        label(for='contentId', class='col-form-label') Content ID:
-                        input(id='contentId', class='form-control', type='text', name='contentId')
+                        label(for='contentId', class='col-form-label') Content:
+                        select(id='contentId' class='form-control', type='text', name='contentId')
+                            for content in contentList
+                                option(label=content.content_url) #{content.id}
                     div(class='modal-footer')
                         button(type='button', class='btn btn-outline-primary', id='saveTopicUpdate') Update Topic
                         button(type='button', class='btn btn-outline-secondary', data-dismiss='modal') Cancel
