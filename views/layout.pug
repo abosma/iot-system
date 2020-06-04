@@ -11,8 +11,7 @@ html(class='h-100')
     block title
     block scripts
         script(src='/javascripts/dependencies/jquery.min.js')
-        script(src='/javascripts/dependencies/popper.min.js')
-        script(src='/javascripts/dependencies/bootstrap.min.js')
+        script(src='/javascripts/dependencies/bootstrap.bundle.min.js')
         script(src='https://unpkg.com/feather-icons')
   body(class='d-flex flex-column h-100')
     div(class='container-fluid flex-grow-1 d-flex')
@@ -53,8 +52,8 @@ html(class='h-100')
                 a(class='nav-link', href='/status') 
                   span(class='feather-24 mr-2' data-feather='info')
                   | Status
-        div(class='col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 flex-grow-1 py-3')
-          nav(class='navbar navbar-light bg-light')
+        div(id='contentParent', class='col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 flex-grow-1 py-3')
+          nav(class='navbar navbar-light rounded-lg shadow-sm')
             block navbar-name
           include toast
           div(class='ml-3')

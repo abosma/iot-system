@@ -1,3 +1,25 @@
+$(document).ready(function() {
+    var newTopicButton = $('#newTopicButton');
+    var newTopicModal = $('#newTopicModal');
+
+    initializeNewTopicButton(newTopicButton, newTopicModal);
+    initializeTooltips();
+})
+
+function initializeNewTopicButton(topicButton, topicModal)
+{
+    topicButton.on('click', function() {
+        topicModal.modal('show');
+    })
+}
+
+function initializeTooltips()
+{
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+}
+
 $('.topicItem').on('click', function(event)
 {
     var topicId = $(this).data('topicid');
@@ -36,7 +58,7 @@ async function initializeTopicModals(modalObject, topicId)
 function initializeTopicEditModal(event)
 {
     const topicData = event.data.topic_data;
-    const { topicId, topicName, contentId, contentUrl } = topicData;
+    const { topicId, topicName, contentId } = topicData;
 
     var topicModalObject = $('#topicModal');
     var topicEditModalObject = $('#topicEditModal');
@@ -54,6 +76,12 @@ function initializeTopicEditModal(event)
         content_id_input: contentIdInput
     }, updateTopic);
 
+    topicEditModalObject.find('#cancelButton').on('click', function()
+    {
+        topicEditModalObject.modal('hide');
+        topicModalObject.modal('show');
+    })
+
     topicModalObject.modal('hide');
     topicEditModalObject.modal('show');
 }
@@ -64,6 +92,16 @@ async function getTopicData(topicId)
             url: '/topics/' + topicId,
             type: 'get'
         })
+}
+
+async function getContentUrl(contentId)
+{
+    var content = $.ajax({
+                            url: '/content/' + contentId,
+                            type: 'get'
+                        })
+    
+    return content.content_url;
 }
 
 function updateTopic(event)

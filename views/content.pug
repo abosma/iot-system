@@ -10,7 +10,7 @@ block title
     title Content - IoT System
 
 block content-authenticated
-    div#contentView
+    div#contentView(class='ml-n3 mt-4 rounded-lg shadow-sm p-3')
         div(class='form-group float-right')
             form(id='uploadContentForm', method='POST', action='/content/upload', enctype="multipart/form-data")
                 input(id='contentFile', type='file', class='form-control-file', name='contentFile')
@@ -18,12 +18,21 @@ block content-authenticated
                     span(class='feather-24 mr-2' data-feather='plus')
                     | Upload Content
 
-        p Content List
-        ul(class='list-group', id='contentListGroup')
-            for content in contentList
-                a(class='list-group-item list-group-item-action contentItem', type='button', data-contentid=content.id) #{content.content_url}
-            else
-                li There is no content in the database.
+        table(class='table')
+            caption List of Content
+            thead
+                tr
+                    th(scope='col') #
+                    th(scope='col') Content URL
+                    th(scope='col') Actions
+            tbody
+                each content, index in contentList
+                    tr
+                        th(scope='row') #{index + 1}
+                        td #{content.content_url}
+                        td #[a(class='feather-16 mr-2 align-self-center contentItem' data-contentid=content.id data-feather='trash' data-toggle='tooltip' title='Remove Content')]
+                else
+                    li There is no content in the database.
 
         div(class='modal fade', id='contentModal', tabindex='-1', role='dialog', aria-labelledby="contentModalLabel", aria-hidden="true")
             div(class='modal-dialog', role='document')

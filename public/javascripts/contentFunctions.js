@@ -1,3 +1,15 @@
+$(document).ready(function() {
+    initializeTooltips();
+})
+
+
+function initializeTooltips()
+{
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+}
+
 $('.contentItem').on('click', function(event)
 {
     var contentId = $(this).data('contentid');
