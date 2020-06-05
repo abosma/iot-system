@@ -7,7 +7,7 @@ block navbar-name
     a(class='navbar-brand') Home
 
 block basic-content
-    div.view.ContentView
+    div#contentView(class='ml-n3 mt-4 rounded-lg shadow-sm p-3')
         if !isAuthenticated
             p Welcome to the IoT system, to use this system you need to be logged in.
             p Please #[a(href='/auth/login') Log In] or #[a(href='/auth/register') Register].
