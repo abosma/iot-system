@@ -28,10 +28,14 @@ block content-authenticated
                     tr
                         th(scope='row') #{index + 1}
                         td #{topic.topic_name}
-                        for content in contentList
-                            if content.id === topic.content_id
-                                td #{content.content_url}
+                        if !topic.content_id
+                                td This topic has no content
                                 break
+                        else
+                            for content in contentList
+                                if content.id === topic.content_id
+                                    td #{content.content_url}
+                                    break
                         td #[a(class='feather-16 mr-2 align-self-center topicItem' data-topicid=topic.id data-feather='edit' data-toggle='tooltip' title='Edit Topic')]
                 else
                     li There are no topics in the database.

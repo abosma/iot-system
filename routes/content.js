@@ -7,7 +7,7 @@ require('dotenv').config();
 
 router.get('/', passport.authenticate('jwt', { session: false }), async function (req, res, next) {
     const contentList = await content_handler.getAllContent().catch((err) => {
-        return next(new Error('Something went wrong retrieving all of the content, please try again.'));
+        return next(new Error('Something went wrong retrieving all of the content, check the database server status and try again.'));
     });
 
     res.render('content', {
@@ -19,7 +19,7 @@ router.get('/:contentId', passport.authenticate('jwt', { session: false }), asyn
     const contentId = req.params.contentId;
 
     const retrievedContent = await content_handler.getContentById(contentId).catch((err) => {
-        return next(new Error('Something went wrong retrieving this content, please try again.'));
+        return next(new Error('Something went wrong retrieving this content, check the database server status and try again.'));
     });
 
     res.send({
@@ -44,14 +44,9 @@ router.post('/', passport.authenticate('jwt', { session: false }), async functio
 
 router.post('/upload', passport.authenticate('jwt', { session: false }), async function (req, res, next) {
     const formRequest = req;
-    
-    if(!formRequest.files)
-    {
-        return next(new Error('No file has been attached for upload, please attach a file before uploading.'));
-    }
 
     await content_handler.uploadContent(formRequest).catch((err) => {
-        return next(new Error('Something went wrong uploading the content, check the file server status and try again.'));
+        return next(new Error('Something went wrong uploading the content, check the database/file server status and try again.'));
     })
 
     res.sendStatus(200);
@@ -77,11 +72,13 @@ router.delete('/', passport.authenticate('jwt', { session: false }), async funct
         contentUrl
     } = req.body;
 
-    try {
-        await sftp_client.delete(contentUrl);
-        await content_handler.deleteContent(contentId)
-    } catch(err) {
-        return next(new Error('Something went wrong deleting the file, please try again.'));
+    try 
+    {
+        await content_handler.deleteContent(contentId, contentUrl);
+    } 
+    catch(err) 
+    {
+        return next(new Error('Something went wrong deleting the file, check the database/file server status and try again.'));
     }
 
     res.sendStatus(200);

@@ -57,7 +57,7 @@ router.post('/register', function(req, res, next) {
             res.sendStatus(200);
         })
         .catch((err) => {
-            return next(new Error('Something went wrong logging in, please try again.'));
+            return next(new Error('Something went wrong logging in, check the database server status and try again.'));
         })
     })
     .catch((err) => {

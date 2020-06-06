@@ -27,7 +27,9 @@ a:hover {
   margin: 0 auto;
 }
 
-.topicItem:hover, .contentItem:hover {
+.topicItem:hover, 
+.contentItem:hover, 
+.deleteContent:hover {
   cursor: pointer;
 }
 

@@ -5,7 +5,8 @@ const sftp_config = {
     port: 22,
     username: process.env.SFTP_USERNAME,
     password: process.env.SFTP_PASSWORD,
-    retries: 0
+    retries: 0,
+    readyTimeout: 1000
 }
 
 const sftp_client = new sftp();

@@ -96,16 +96,22 @@ function uploadContent(formRequest)
     })
 }
 
-function deleteContent(contentId) {
-    return new Promise((resolve, reject) => 
+function deleteContent(contentId, contentUrl) {
+    return new Promise(async (resolve, reject) => 
     {
-        database_connector.query('DELETE FROM content WHERE id = $1::integer', [contentId])
-        .then(() => {
+        try
+        {
+            var connectedClient = await sftp_connector.getConnectedClient();
+
+            await connectedClient.delete(contentUrl);
+            await database_connector.query('DELETE FROM content WHERE id = $1::integer', [contentId]);
+
             resolve();
-        })
-        .catch((err) => {
+        }
+        catch(err)
+        {
             reject(err);
-        })
+        }
     })
 }
 

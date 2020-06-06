@@ -11,12 +11,9 @@ block title
 
 block content-authenticated
     div#contentView(class='ml-n3 mt-4 rounded-lg shadow-sm p-3')
-        div(class='form-group float-right')
-            form(id='uploadContentForm', method='POST', action='/content/upload', enctype="multipart/form-data")
-                input(id='contentFile', type='file', class='form-control-file', name='contentFile')
-                button(class='btn btn-primary', type='submit')
-                    span(class='feather-24 mr-2' data-feather='plus')
-                    | Upload Content
+        button(class='btn btn-primary float-right mb-3', id='newContentButton')
+            span(class='feather-24 mr-2' data-feather='plus')
+            | Upload Content
 
         table(class='table')
             caption List of Content
@@ -24,43 +21,29 @@ block content-authenticated
                 tr
                     th(scope='col') #
                     th(scope='col') Content URL
+                    th(scope='col') Content Type
                     th(scope='col') Actions
             tbody
                 each content, index in contentList
                     tr
                         th(scope='row') #{index + 1}
                         td #{content.content_url}
-                        td #[a(class='feather-16 mr-2 align-self-center contentItem' data-contentid=content.id data-feather='trash' data-toggle='tooltip' title='Remove Content')]
+                        td #{content.content_type}
+                        td #[a(class='feather-16 mr-2 align-self-center deleteContent' data-contentid=content.id data-contenturl=content.content_url data-feather='trash' data-toggle='tooltip' title='Remove Content')]
                 else
                     li There is no content in the database.
 
-        div(class='modal fade', id='contentModal', tabindex='-1', role='dialog', aria-labelledby="contentModalLabel", aria-hidden="true")
-            div(class='modal-dialog', role='document')
+        div(class='modal fade', id='newContentModal', tabindex='-1', role='dialog', aria-hidden="true")
+            div(class='modal-dialog modal-dialog-centered', role='document')
                 div(class='modal-content')
-                    div(class='modal-header')
-                        div(class='modal-title', id='contentTitle') Basic Content Title
-                        button(type='button', class='close', data-dismiss='modal', aria-label='Close')
-                            span x
-                    div(class='modal-body')
-                        p(id='contentUrl') Basic Content Url
-                        p(id='contentType') Basic Content Type
-                    div(class='modal-footer')
-                        button(type='button', class='btn btn-outline-primary', id='updateContent') Update Content
-                        button(type='button', class='btn btn-outline-danger', id='deleteContent') Delete Content
-                        button(type='button', class='btn btn-outline-secondary', data-dismiss='modal') Cancel
-
-        div(class='modal fade', id='contentEditModal', tabindex='-1', role='dialog', aria-laballedby='contentEditModalLabel', aria-hidden='true')
-            div(class='modal-dialog', role='document')
-                div(class='modal-content')
-                    div(class='modal-header')
-                        div(class='modal-title') Editing Content
-                        button(type='button', class='close', data-dismiss='modal', aria-label='Close')
-                            span x
-                    div(class='modal-body')
-                        label(for='contentUrl', class='col-form-label') Content URL:
-                        input(id='contentUrl', class='form-control', type='text', name='contentUrl')
-                        label(for='contentType', class='col-form-label') Content Type:
-                        input(id='contentType', class='form-control', type='text', name='contentType')
-                    div(class='modal-footer')
-                        button(type='button', class='btn btn-outline-primary', id='saveContentUpdate') Update Content
-                        button(type='button', class='btn btn-outline-secondary', data-dismiss='modal') Cancel
+                    form(id='uploadContentForm', method='POST', action='/content/upload', enctype="multipart/form-data")
+                        div(class='modal-header')
+                            div(class='modal-title') #[h4 New Topic]
+                            button(type='button', class='close', data-dismiss='modal', aria-label='Close')
+                                span &times;
+                        div(class='modal-body')
+                            input(id='contentFile', type='file', class='form-control-file', name='contentFile')
+                        div(class='modal-footer')
+                            button(class='btn btn-primary', type='submit')
+                                span(class='feather-24 mr-2' data-feather='plus')
+                                | Upload Content

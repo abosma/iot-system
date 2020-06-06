@@ -89,9 +89,9 @@ function initializeTopicEditModal(event)
 async function getTopicData(topicId)
 {
     return $.ajax({
-            url: '/topics/' + topicId,
-            type: 'get'
-        })
+                    url: '/topics/' + topicId,
+                    type: 'get'
+                })
 }
 
 async function getContentUrl(contentId)
@@ -110,8 +110,7 @@ function updateTopic(event)
     var topic_name = event.data.topic_name_input.val();
     var content_id = event.data.content_id_input.val();
 
-    $.ajax(
-        {
+    $.ajax({
             url: '/topics',
             type: 'put',
             data: 
@@ -119,28 +118,31 @@ function updateTopic(event)
                 topicId: topic_id,
                 topicName: topic_name,
                 contentId: content_id
+            },
+            success: function() {
+                location.reload();
+            },
+            error: function() {
+                location.reload();
             }
-        }
-    ).done(function()
-    {
-        location.reload();
-    })
+        })
 }
 
 function deleteTopic(event)
 {
-    $.ajax(
-        {
+    $.ajax({
             url: '/topics',
             type: 'delete',
             data: 
             {
                 topicId: event.data.topic_id,
                 topicName: event.data.topic_name
+            },
+            success: function() {
+                location.reload();
+            },
+            error: function() {
+                location.reload();
             }
-        }
-    ).done(function()
-    {
-        location.reload();
-    })
+        })
 }
