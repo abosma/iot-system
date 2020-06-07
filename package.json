@@ -6,7 +6,8 @@
     "start": "node ./bin/www",
     "test": "set NODE_ENV=test&& mocha test/**/*.js --exit",
     "travis_test": "env NODE_ENV=test mocha test/**/*.js --exit",
-    "coverage": "nyc npm run test"
+    "coverage": "nyc npm run test",
+    "travis_coverage": "nyc npm run travis_test"
   },
   "dependencies": {
     "async-mqtt": "^2.5.0",
