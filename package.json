@@ -4,8 +4,10 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test": "mocha",
-    "coverage": "nyc npm run test"
+    "test": "set NODE_ENV=test&& mocha test/**/*.js --exit",
+    "travis_test": "env NODE_ENV=test mocha test/**/*.js --exit",
+    "coverage": "nyc npm run test",
+    "travis_coverage": "nyc npm run travis_test"
   },
   "dependencies": {
     "async-mqtt": "^2.5.0",
@@ -37,6 +39,7 @@
   "devDependencies": {
     "mocha": "^7.1.1",
     "nyc": "^15.0.1",
+    "sinon": "^9.0.2",
     "supertest": "^4.0.2"
   }
 }
