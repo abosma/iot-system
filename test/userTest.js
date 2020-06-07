@@ -11,26 +11,29 @@ describe('Testing database interaction with: Users', () => {
         var queryStub = sinon.stub(database, 'query');
 
         queryStub.withArgs('SELECT * FROM users WHERE id = $1::integer', [1])
-            .resolves(
-                data = {
-                    rows: [{
-                        id: 'stubbedId',
-                        username: 'stubbedUsername',
-                        password: 'stubbedPassword'
-                    }]
-                }
-            )
+        .resolves(
+            data = {
+                rows: [{
+                    id: 'stubbedId',
+                    username: 'stubbedUsername',
+                    password: 'stubbedPassword'
+                }]
+            }
+        )
 
         queryStub.withArgs('SELECT * FROM users WHERE username = $1::varchar', ['TestUsername'])
-            .resolves(
-                data = {
-                    rows: [{
-                        id: 'stubbedId',
-                        username: 'TestUsername',
-                        password: 'stubbedPassword'
-                    }]
-                },
-            )
+        .resolves(
+            data = {
+                rows: [{
+                    id: 'stubbedId',
+                    username: 'TestUsername',
+                    password: 'stubbedPassword'
+                }]
+            },
+        )
+
+        queryStub.withArgs('SELECT * FROM users WHERE id = $1::integer', [2]).rejects();
+        queryStub.withArgs('SELECT * FROM users WHERE username = $1::varchar', ['UnknownUsername']).rejects();
     })
 
     describe('Testing user retrieval based on ID', () => {
@@ -62,6 +65,16 @@ describe('Testing database interaction with: Users', () => {
             assert.equal(returnedData.id, "stubbedId");
             assert.equal(returnedData.username, "TestUsername");
             assert.equal(returnedData.password, "stubbedPassword");
+        })
+    })
+
+    describe('Testing user retrieval failure handling', () => {
+        it('should throw an error when retrieving user by non-existant id', () => {
+            assert.rejects(user_handler.getUserById(2));
+        })
+
+        it('should throw an error when retrieving user by non-existant username', () => {
+            assert.rejects(user_handler.getUserByUsername('UnknownUsername'));
         })
     })
 

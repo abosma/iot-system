@@ -11,32 +11,34 @@ describe('Testing database interaction with: Topics', () => {
         var queryStub = sinon.stub(database, 'query');
 
         queryStub.withArgs('SELECT * FROM topic WHERE id = $1::integer', [1])
-            .resolves(
-                data = {
-                    rows: [{
+        .resolves(
+            data = {
+                rows: [{
+                    id: 'stubbedId',
+                    content_id: 'stubbedContentId',
+                    topic_name: 'stubbedTopicName'
+                }]
+            }
+        )
+
+        queryStub.withArgs('SELECT * FROM topic')
+        .resolves(
+            data = {
+                rows: [{
                         id: 'stubbedId',
                         content_id: 'stubbedContentId',
                         topic_name: 'stubbedTopicName'
-                    }]
-                }
-            )
+                    },
+                    {
+                        id: 'stubbedId2',
+                        content_id: 'stubbedContentId2',
+                        topic_name: 'stubbedTopicName2'
+                    }
+                ]
+            },
+        )
 
-        queryStub.withArgs('SELECT * FROM topic')
-            .resolves(
-                data = {
-                    rows: [{
-                            id: 'stubbedId',
-                            content_id: 'stubbedContentId',
-                            topic_name: 'stubbedTopicName'
-                        },
-                        {
-                            id: 'stubbedId2',
-                            content_id: 'stubbedContentId2',
-                            topic_name: 'stubbedTopicName2'
-                        }
-                    ]
-                },
-            )
+        queryStub.withArgs('SELECT * FROM topic WHERE id = $1::integer', [2]).rejects();
     })
 
     describe('Testing topic retrieval based on ID', () => {
@@ -62,6 +64,12 @@ describe('Testing database interaction with: Topics', () => {
             returnedDataArray = await topic_handler.getTopics();
 
             assert.notEqual(returnedDataArray, null);
+        })
+    })
+
+    describe('Testing topic retrieval failure handling', () => {
+        it('should throw an error when retrieving topic by id', () => {
+            assert.rejects(topic_handler.getTopicById(2));
         })
     })
 

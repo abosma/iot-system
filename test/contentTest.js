@@ -11,32 +11,34 @@ describe('Testing database interaction with: Content', () => {
         var queryStub = sinon.stub(database, 'query');
 
         queryStub.withArgs('SELECT * FROM content WHERE id = $1::integer', [1])
-            .resolves(
-                data = {
-                    rows: [{
+        .resolves(
+            data = {
+                rows: [{
+                    id: 'stubbedId',
+                    content_url: 'stubbedUrl',
+                    content_type: 'stubbedType'
+                }]
+            }
+        )
+
+        queryStub.withArgs('SELECT * FROM content')
+        .resolves(
+            data = {
+                rows: [{
                         id: 'stubbedId',
                         content_url: 'stubbedUrl',
                         content_type: 'stubbedType'
-                    }]
-                }
-            )
+                    },
+                    {
+                        id: 'stubbedId2',
+                        content_url: 'stubbedUrl2',
+                        content_type: 'stubbedType2'
+                    }
+                ]
+            },
+        )
 
-        queryStub.withArgs('SELECT * FROM content')
-            .resolves(
-                data = {
-                    rows: [{
-                            id: 'stubbedId',
-                            content_url: 'stubbedUrl',
-                            content_type: 'stubbedType'
-                        },
-                        {
-                            id: 'stubbedId2',
-                            content_url: 'stubbedUrl2',
-                            content_type: 'stubbedType2'
-                        }
-                    ]
-                },
-            )
+        queryStub.withArgs('SELECT * FROM content WHERE id = $1::integer', [2]).rejects();
     })
 
     describe('Testing content retrieval based on ID', () => {
@@ -62,6 +64,12 @@ describe('Testing database interaction with: Content', () => {
             returnedDataArray = await content_handler.getAllContent();
 
             assert.notEqual(returnedDataArray, null);
+        })
+    })
+
+    describe('Testing content retrieval failure handling', () => {
+        it('should throw an error when retrieving content by id', () => {
+            assert.rejects(content_handler.getContentById(2));
         })
     })
 

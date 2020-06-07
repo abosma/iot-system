@@ -37,7 +37,6 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "chai": "^4.2.0",
     "mocha": "^7.1.1",
     "nyc": "^15.0.1",
     "sinon": "^9.0.2",
