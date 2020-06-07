@@ -33,6 +33,7 @@ describe('Testing database interaction with: Users', () => {
         )
 
         queryStub.withArgs('SELECT * FROM users WHERE id = $1::integer', [2]).rejects();
+        
         queryStub.withArgs('SELECT * FROM users WHERE username = $1::varchar', ['UnknownUsername']).rejects();
     })
 
