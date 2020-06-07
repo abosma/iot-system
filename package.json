@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "test": "mocha test/**/*.js --exit",
+    "travis_test": "env NODE_ENV=test mocha test/**/*.js --exit",
     "coverage": "nyc npm run test"
   },
   "dependencies": {
@@ -35,6 +36,7 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
+    "chai": "^4.2.0",
     "mocha": "^7.1.1",
     "nyc": "^15.0.1",
     "sinon": "^9.0.2",

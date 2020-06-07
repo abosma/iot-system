@@ -7,6 +7,15 @@ const fs = require('fs');
 const key = fs.readFileSync(__dirname + '/../certs/server.key');
 const cert = fs.readFileSync(__dirname + '/../certs/server.cert')
 
+const db_connection_config_test =
+{
+    user: 'postgres',
+    password: '',
+    host: 'localhost',
+    port: 5432,
+    database: 'travis_ci_test'
+}
+
 const db_connection_config = 
 {
     user: process.env.PGUSER,
@@ -22,7 +31,7 @@ const db_connection_config =
     }
 }
 
-const pool = new Pool(db_connection_config);
+const pool = process.env.NODE_ENV == "test" ? new Pool(db_connection_config_test) : new Pool(db_connection_config);
 
 // Prepared Statement gets an encrypted name. If the text is the same, the name is the same.
 async function query(text, params = null)
