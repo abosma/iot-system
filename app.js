@@ -6,13 +6,13 @@ const morgan = require('morgan');
 const winston = require('./logging/winston');
 const expressSession = require('express-session');
 const passport = require('passport');
-const passport_handler = require('./routes/authentication/passport_handler');
+const passport_handler = require('./authentication/passport_handler');
 
 const indexRouter = require('./routes/index');
 const topicRouter = require('./routes/topics');
 const contentRouter = require('./routes/content');
 const authRouter = require('./routes/auth');
-const mqttRouter = require('./routes/mqtt');
+const statusRouter = require('./routes/status');
 
 // Loads environment variables from .env file
 require('dotenv').config();
@@ -33,16 +33,18 @@ app.use(cookieParser());
 
 const expressSessionOptions = {
 	secret: process.env.HASH_SECRET,
-	cookie: {},
+	cookie: {
+		path: '/',
+		httpOnly: true,
+		secure: true,
+		maxAge: null,
+		sameSite: true
+	},
 	resave: false,
 	saveUninitialized: false
 }
 
-if (app.get('env') === 'production') {
-	expressSessionOptions.cookie.secure = true;
-}
-
-app.use(expressSession(expressSessionOptions))
+app.use(expressSession(expressSessionOptions));
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -54,6 +56,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
 	res.locals.isAuthenticated = req.isAuthenticated();
+	
+	// Used for toast notifications. Exposes flash information from request to response for view engine rendering.
+	res.locals.sessionFlash = req.session.sessionFlash;
+	delete req.session.sessionFlash;
+	
 	next();
 })
 
@@ -61,24 +68,29 @@ app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/topics', topicRouter);
 app.use('/content', contentRouter);
-app.use('/mqtt', mqttRouter);
+app.use('/status', statusRouter);
 
-// catch 404 and forward to error handler
+// Catch 404 and forward to error handler
 app.use(function (req, res, next) {
 	next(createError(404));
 });
 
-// error handler
+// Custom Error Handler
 app.use(function (err, req, res, next) {
 	// set locals, only providing error in development
 	res.locals.message = err.message;
 	res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-	winston.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
+	// Writes the error message + stacktrace in both the console and log file. Users only get the error message.
+	winston.error(`${err.status || 500} - ${err.stack} - ${req.originalUrl} - ${req.method} - ${req.ip}`)
 
-	// render the error page
-	res.status(err.status || 500);
-	res.render('error');
+	req.session.sessionFlash = 
+	{
+		type: 'Error',
+		message: err.message
+	}
+
+	res.redirect('back');
 });
 
 module.exports = app;
