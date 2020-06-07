@@ -4,8 +4,8 @@ const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
 const fs = require('fs');
 
-const key = null;
-const cert = null;
+var key = null;
+var cert = null;
 
 if(process.env.NODE_ENV != "test")
 {
