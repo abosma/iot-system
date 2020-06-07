@@ -3,63 +3,63 @@
 const sinon = require('sinon').createSandbox();
 const assert = require('assert');
 const database = require('../data/database_connector')
-const content_handler = require('../business/content_handler')
+const topic_handler = require('../business/topic_handler')
 
-describe('Testing database interaction with: Content', () => {
+describe('Testing database interaction with: Topics', () => {
 
     before('Initializing database query reaction stub', () => {
         var queryStub = sinon.stub(database, 'query');
 
-        queryStub.withArgs('SELECT * FROM content WHERE id = $1::integer', [1])
+        queryStub.withArgs('SELECT * FROM topic WHERE id = $1::integer', [1])
             .resolves(
                 data = {
                     rows: [{
                         id: 'stubbedId',
-                        content_url: 'stubbedUrl',
-                        content_type: 'stubbedType'
+                        content_id: 'stubbedContentId',
+                        topic_name: 'stubbedTopicName'
                     }]
                 }
             )
 
-        queryStub.withArgs('SELECT * FROM content')
+        queryStub.withArgs('SELECT * FROM topic')
             .resolves(
                 data = {
                     rows: [{
                             id: 'stubbedId',
-                            content_url: 'stubbedUrl',
-                            content_type: 'stubbedType'
+                            content_id: 'stubbedContentId',
+                            topic_name: 'stubbedTopicName'
                         },
                         {
                             id: 'stubbedId2',
-                            content_url: 'stubbedUrl2',
-                            content_type: 'stubbedType2'
+                            content_id: 'stubbedContentId2',
+                            topic_name: 'stubbedTopicName2'
                         }
                     ]
                 },
             )
     })
 
-    describe('Testing content retrieval based on ID', () => {
+    describe('Testing topic retrieval based on ID', () => {
         let returnedData;
 
-        it('should return content data based on id', async () => {
-            returnedData = await content_handler.getContentById(1);
+        it('should return topic data based on id', async () => {
+            returnedData = await topic_handler.getTopicById(1);
 
             assert.notEqual(returnedData, null);
         })
 
         it('should get the right stubbed data as response', () => {
             assert.equal(returnedData.id, "stubbedId");
-            assert.equal(returnedData.content_url, "stubbedUrl");
-            assert.equal(returnedData.content_type, "stubbedType");
+            assert.equal(returnedData.content_id, "stubbedContentId");
+            assert.equal(returnedData.topic_name, "stubbedTopicName");
         })
     })
 
-    describe('Testing multiple content retrieval', () => {
+    describe('Testing multiple topic retrieval', () => {
         let returnedDataArray;
 
-        it('should return an array of content', async () => {
-            returnedDataArray = await content_handler.getAllContent();
+        it('should return an array of topics', async () => {
+            returnedDataArray = await topic_handler.getTopics();
 
             assert.notEqual(returnedDataArray, null);
         })
