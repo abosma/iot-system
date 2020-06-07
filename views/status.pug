@@ -1,26 +1,36 @@
 extends layout
 
+block title
+    title Status - IoT System
+
+block navbar-name
+    a(class='navbar-brand') Connection Status
+
 block basic-content
-    div.view.ContentView
-        h1.Banner Connection Status
+    div#contentView(class='ml-n3 mt-4 rounded-lg shadow-sm p-3 align-items-center')
+        div(class='mx-auto' style='max-width: 850px;')
+            if mqttStatus == true && databaseStatus == true && sftpStatus == true
+                div(class='bg-success rounded shadow-sm mb-5' style='height: 3rem')
+                    a(class='ml-3 text-white', style='font-size: 1.25rem; line-height: 2.5;') Connected to all servers
+            else
+                div(class='bg-danger rounded shadow-sm mb-5' style='height: 3rem')
+                    a(class='ml-3 text-white', style='font-size: 1.25rem; line-height: 2.5;') Not connected to all servers
 
-        if mqttStatus == true && databaseStatus == true
-            div(class='d-flex justify-content-center bg-success rounded shadow-sm')
-                a(class='text-white') Connected to all servers
-        else
-            div(class='d-flex justify-content-center bg-danger rounded shadow-sm')
-                a(class='text-white') Not connected to all servers
-
-        div(class='d-flex flex-column align-items-center p-3 bg-white rounded shadow-sm')
-            div(class='p-2')
-                a MQTT Server 
+            div(class='p-3 border border-secondary rounded-top')
+                a(class='font-weight-bold') MQTT Server 
                 if mqttStatus == true
-                    span(class='badge badge-success') Connected
+                    span(class='badge badge-success float-right') Connected
                 else
-                    span(class='badge badge-danger') Disconnected
-            div(class='p-2')
-                a Database Server 
+                    span(class='badge badge-danger float-right') Disconnected
+            div(class='p-3 border border-top-0 border-secondary')
+                a(class='font-weight-bold') SFTP Server 
+                if sftpStatus == true
+                    span(class='badge badge-success float-right') Connected
+                else
+                    span(class='badge badge-danger float-right') Disconnected
+            div(class='p-3 border border-top-0 border-secondary rounded-bottom')
+                a(class='font-weight-bold') Database Server 
                 if databaseStatus == true
-                    span(class='badge badge-success') Connected
+                    span(class='badge badge-success float-right') Connected
                 else
-                    span(class='badge badge-danger') Disconnected
+                    span(class='badge badge-danger float-right') Disconnected

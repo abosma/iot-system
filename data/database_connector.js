@@ -4,10 +4,10 @@ const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
 const fs = require('fs');
 
-const key = fs.readFileSync(__dirname + '/../../certs/server.key');
-const cert = fs.readFileSync(__dirname + '/../../certs/server.cert')
+const key = fs.readFileSync(__dirname + '/../certs/server.key');
+const cert = fs.readFileSync(__dirname + '/../certs/server.cert')
 
-const config = 
+const db_connection_config = 
 {
     user: process.env.PGUSER,
     password: process.env.PGPASSWORD,
@@ -22,8 +22,9 @@ const config =
     }
 }
 
-const pool = new Pool(config);
+const pool = new Pool(db_connection_config);
 
+// Prepared Statement gets an encrypted name. If the text is the same, the name is the same.
 async function query(text, params = null)
 {
     const statementName = await bcrypt.hash(text, 10)
@@ -39,10 +40,10 @@ async function query(text, params = null)
 
 function getConnectionStatus()
 {
+    // It resolves false instead of rejecting, this is so routes/status.js can easily render the status
     return new Promise((resolve, reject) => {
-        pool.connect()
-        .then(client => {
-            client.release();
+        pool.query('SELECT NOW()')
+        .then(res => {
             resolve(true);
         })
         .catch(error => {

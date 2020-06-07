@@ -1,49 +1,68 @@
 block variables
 doctype html
-html
+html(class='h-100')
   head
     meta(charset="utf-8")
-    link(rel="shortcut icon", href="/favicon.ico")
+    link(rel="shortcut icon", href="/images/favicon.ico")
     link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css', integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS", crossorigin="anonymous")
-    meta(name="viewport", content="width=device-width, initial-scale=1, shrink-to-fit=no")
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Montserrat")
+    meta(name="viewport", content="width=device-width, initial-scale=1, shrink-to-fit=no, height=100%")
     meta(name="theme-color", content="#000000")
-    title #{title}
+    block title
     block scripts
         script(src='/javascripts/dependencies/jquery.min.js')
-        script(src='/javascripts/dependencies/popper.min.js')
-        script(src='/javascripts/dependencies/bootstrap.min.js')
-  body
-    nav(class='navbar navbar-dark static-top bg-dark flex-md-nowrap p-0 shadow')
-      a(class='navbar-brand col-sm-3 col-md-2 mr-0 text-light') IoT Content Management System
-      if isAuthenticated
-        ul(class='navbar-nav px-3')
-          li(class='nav-item text-nowrap')
-            a(class='nav-link text-light', href='/auth/logout') Log Out
-    div(class='container-fluid')
-      div(class='row')
-        nav(class='col-md-2 d-none d-md-block bg-light sidebar')
-          div(class='sidebar-sticky')
-            ul(class='nav flex-column')
+        script(src='/javascripts/dependencies/bootstrap.bundle.min.js')
+        script(src='https://unpkg.com/feather-icons')
+  body(class='d-flex flex-column h-100')
+    div(class='container-fluid flex-grow-1 d-flex')
+      div(class='row flex-fill flex-column flex-sm-row')
+        div(class='sidebar col-sm-3 col-md-2 flex-shrink-1 bg-dark pt-3')
+          ul(class='nav flex-column')
+            li(class='nav-item text-light ml-3 mb-3')
+              img(class='align-middle' src='/images/icon.png' width='32px' height='32px')
+              a(class='navbar-brand align-middle ml-2') IoT System
+            li(class='nav-item')
+              a(class='nav-link', href='/')
+                span(class='feather-24 mr-2' data-feather='home')
+                | Home
+              
+            if !isAuthenticated
               li(class='nav-item')
-                a(class='nav-link', href='/') Main Page
-              if !isAuthenticated
-                li(class='nav-item')
-                  a(class='nav-link', href='/auth/login') Login Screen
-                li(class='nav-item')
-                  a(class='nav-link', href='/auth/register') Register Screen
-                li(class='nav-item')
-                  a(class='nav-link', href='/status') Connection Status Screen
-              else
-                li(class='nav-item')
-                  a(class='nav-link', href='/content') Content Configuration Screen
-                li(class='nav-item')
-                  a(class='nav-link', href='/topics') Topic Configuration Screen
-                li(class='nav-item')
-                  a(class='nav-link', href='/status') Connection Status Screen
-        block basic-content
-        if isAuthenticated
-          block content-authenticated
-        else
-          block content-unauthenticated
+                a(class='nav-link', href='/auth/login')
+                  span(class='feather-24 mr-2' data-feather='log-in')
+                  | Login
+              li(class='nav-item')
+                a(class='nav-link', href='/auth/register') 
+                  span(class='feather-24 mr-2' data-feather='user-plus')
+                  | Register
+            else
+              li(class='nav-item')
+                a(class='nav-link', href='/topics')
+                  span(class='feather-24 mr-2' data-feather='message-circle')
+                  | Topics
+              li(class='nav-item')
+                a(class='nav-link', href='/content')
+                  span(class='feather-24 mr-2' data-feather='file')
+                  | Content
+              li(class='nav-item')
+                a(class='nav-link', href='/auth/logout')
+                  span(class='feather-24 mr-2' data-feather='log-out')
+                  | Log Out
+            li(class='nav-item')
+                a(class='nav-link', href='/status') 
+                  span(class='feather-24 mr-2' data-feather='info')
+                  | Status
+        div(id='contentParent', class='col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 flex-grow-1 py-3')
+          nav(class='navbar navbar-light rounded-lg shadow-sm')
+            block navbar-name
+          include toast
+          div(class='ml-3')
+            block basic-content
+            if isAuthenticated
+              block content-authenticated
+            else
+              block content-unauthenticated
 
+script feather.replace()
 block appended_scripts

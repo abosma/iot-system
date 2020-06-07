@@ -1,4 +1,10 @@
 extends layout
 
+block title
+    title Error - IoT System
+
+block navbar-name
+    a(class='navbar-brand') Error
+
 block basic-content
-    h1 Not Found
+    h1= errorMessage

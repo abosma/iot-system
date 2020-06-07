@@ -1,3 +1,25 @@
+$(document).ready(function() {
+    var newTopicButton = $('#newTopicButton');
+    var newTopicModal = $('#newTopicModal');
+
+    initializeNewTopicButton(newTopicButton, newTopicModal);
+    initializeTooltips();
+})
+
+function initializeNewTopicButton(topicButton, topicModal)
+{
+    topicButton.on('click', function() {
+        topicModal.modal('show');
+    })
+}
+
+function initializeTooltips()
+{
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+}
+
 $('.topicItem').on('click', function(event)
 {
     var topicId = $(this).data('topicid');
@@ -14,10 +36,10 @@ $('.topicItem').on('click', function(event)
 async function initializeTopicModals(modalObject, topicId)
 {
     const topicData = await getTopicData(topicId);
-    const { topicName, contentId } = topicData;
+    const { topicName, contentUrl } = topicData;
 
     modalObject.find('#topicName').text(topicName ? topicName : 'This topic has no name.');
-    modalObject.find('#contentId').text(contentId ? contentId : 'This topic has no content connected to it.');
+    modalObject.find('#contentId').text(contentUrl ? contentUrl : 'This topic has no content connected to it.');
 
     modalObject.find('#updateTopic').on('click',
     {
@@ -45,7 +67,7 @@ function initializeTopicEditModal(event)
     var contentIdInput = topicEditModalObject.find('#contentId');
 
     topicNameInput.val(topicName);
-    contentIdInput.val(contentId);
+    contentIdInput.find('option[value="' + contentId + '"]').prop('selected', true);
 
     topicEditModalObject.find('#saveTopicUpdate').on('click', 
     {
@@ -54,6 +76,12 @@ function initializeTopicEditModal(event)
         content_id_input: contentIdInput
     }, updateTopic);
 
+    topicEditModalObject.find('#cancelButton').on('click', function()
+    {
+        topicEditModalObject.modal('hide');
+        topicModalObject.modal('show');
+    })
+
     topicModalObject.modal('hide');
     topicEditModalObject.modal('show');
 }
@@ -61,9 +89,19 @@ function initializeTopicEditModal(event)
 async function getTopicData(topicId)
 {
     return $.ajax({
-            url: '/topics/' + topicId,
-            type: 'get'
-        })
+                    url: '/topics/' + topicId,
+                    type: 'get'
+                })
+}
+
+async function getContentUrl(contentId)
+{
+    var content = $.ajax({
+                            url: '/content/' + contentId,
+                            type: 'get'
+                        })
+    
+    return content.content_url;
 }
 
 function updateTopic(event)
@@ -72,8 +110,7 @@ function updateTopic(event)
     var topic_name = event.data.topic_name_input.val();
     var content_id = event.data.content_id_input.val();
 
-    $.ajax(
-        {
+    $.ajax({
             url: '/topics',
             type: 'put',
             data: 
@@ -81,28 +118,31 @@ function updateTopic(event)
                 topicId: topic_id,
                 topicName: topic_name,
                 contentId: content_id
+            },
+            success: function() {
+                location.reload();
+            },
+            error: function() {
+                location.reload();
             }
-        }
-    ).done(function()
-    {
-        location.reload();
-    })
+        })
 }
 
 function deleteTopic(event)
 {
-    $.ajax(
-        {
+    $.ajax({
             url: '/topics',
             type: 'delete',
             data: 
             {
                 topicId: event.data.topic_id,
                 topicName: event.data.topic_name
+            },
+            success: function() {
+                location.reload();
+            },
+            error: function() {
+                location.reload();
             }
-        }
-    ).done(function()
-    {
-        location.reload();
-    })
+        })
 }

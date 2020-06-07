@@ -1,0 +1,12 @@
+block appended_scripts
+    script(src="/javascripts/toastFunctions.js")
+
+block toast
+    if sessionFlash
+        div(style='position: absolute; top: 0; right: 0;')
+            div(class='toast' role='alert' data-delay='7500')
+                div(class='toast-header')
+                    strong(class='mr-auto')= sessionFlash.type
+                    button(type='button' class='ml-2 mb-1 close' data-dismiss='toast' aria-label='Close')
+                        span(aria-hidden='true') x
+                div(class='toast-body')= sessionFlash.message

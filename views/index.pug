@@ -1,12 +1,18 @@
 extends layout
 
+block title
+    title Home - IoT System
+
+block navbar-name
+    a(class='navbar-brand') Home
+
 block basic-content
-    div.view.ContentView
-        h1.Banner Main Page
+    div#contentView(class='ml-n3 mt-4 rounded-lg shadow-sm p-3')
         if !isAuthenticated
-            a(href='/auth/login') Login
-            br
-            a(href='/auth/register') Register
+            p Welcome to the IoT system, to use this system you need to be logged in.
+            p Please #[a(href='/auth/login') Log In] or #[a(href='/auth/register') Register].
+            p Connection status of the system to required external systems can be found on the #[a(href='/status') Status] page.
         else
-            p You are logged in as #{username}
-            a(href='/auth/logout')
+            p Welcome to the IoT system. Here you can create topics, upload content and connect topics to content for use by the IoT presentation devices.
+            p Content can be uploaded and deleted on the #[a(href='/content') Content] page.
+            p Topics can be created on the #[a(href='/topics') Topics] page. Here you can also connect Content to Topics.
