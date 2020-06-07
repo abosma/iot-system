@@ -2,6 +2,10 @@ const client = require('../data/mqtt_connector').client;
 
 function subscribeToTopic(topic) {
     return new Promise((resolve, reject) => {
+        if(!client.connected) {
+            reject(new Error('Not connected with MQTT Server, please try again.'))
+        }
+        
         client.subscribe(topic)
         .then(() => {
             resolve();
@@ -14,6 +18,10 @@ function subscribeToTopic(topic) {
 
 function unsubscribeToTopic(topic) {
     return new Promise((resolve, reject) => {
+        if(!client.connected) {
+            reject(new Error('Not connected with MQTT Server, please try again.'))
+        }
+        
         client.unsubscribe(topic)
         .then(() => {
             resolve();
@@ -26,6 +34,10 @@ function unsubscribeToTopic(topic) {
 
 function publishMessageToTopic(topic, message) {
     return new Promise((resolve, reject) => {
+        if(!client.connected) {
+            reject(new Error('Not connected with MQTT Server, please try again.'))
+        }
+        
         client.publish(topic, message)
         .then(() => {
             resolve();

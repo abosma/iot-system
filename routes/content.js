@@ -5,10 +5,9 @@ const passport = require('passport');
 
 require('dotenv').config();
 
-router.get('/', passport.authenticate('jwt', { session: false }), async function (req, res) {
+router.get('/', passport.authenticate('jwt', { session: false }), async function (req, res, next) {
     const contentList = await content_handler.getAllContent().catch((err) => {
-        res.sendStatus('500');
-        throw new Error(err)
+        return next(new Error('Something went wrong retrieving all of the content, check the database server status and try again.'));
     });
 
     res.render('content', {
@@ -16,12 +15,11 @@ router.get('/', passport.authenticate('jwt', { session: false }), async function
     })
 })
 
-router.get('/:contentId', passport.authenticate('jwt', { session: false }), async function (req, res) {
+router.get('/:contentId', passport.authenticate('jwt', { session: false }), async function (req, res, next) {
     const contentId = req.params.contentId;
 
     const retrievedContent = await content_handler.getContentById(contentId).catch((err) => {
-        res.sendStatus(500);
-        throw new Error(err)
+        return next(new Error('Something went wrong retrieving this content, check the database server status and try again.'));
     });
 
     res.send({
@@ -31,32 +29,30 @@ router.get('/:contentId', passport.authenticate('jwt', { session: false }), asyn
     });
 })
 
-router.post('/', passport.authenticate('jwt', { session: false }), async function (req, res) {
+router.post('/', passport.authenticate('jwt', { session: false }), async function (req, res, next) {
     const {
         contentUrl,
         contentType
     } = req.body;
 
     await content_handler.createContent(contentUrl, contentType).catch((err) => {
-        res.sendStatus(500);
-        throw new Error(err)
+        return next(new Error('Something went wrong creating a new content row, please try again.'));
     });
 
     res.redirect('/content');
 })
 
-router.post('/upload', passport.authenticate('jwt', { session: false }), async function (req, res) {
+router.post('/upload', passport.authenticate('jwt', { session: false }), async function (req, res, next) {
     const formRequest = req;
-    
+
     await content_handler.uploadContent(formRequest).catch((err) => {
-        res.sendStatus(500);
-        throw new Error(err);
+        return next(new Error('Something went wrong uploading the content, check the database/file server status and try again.'));
     })
 
     res.sendStatus(200);
 })
 
-router.put('/', passport.authenticate('jwt', { session: false }), async function (req, res) {
+router.put('/', passport.authenticate('jwt', { session: false }), async function (req, res, next) {
     const {
         contentId,
         contentUrl,
@@ -64,25 +60,26 @@ router.put('/', passport.authenticate('jwt', { session: false }), async function
     } = req.body;
 
     await content_handler.updateContent(contentUrl, contentType, contentId).catch((err) => {
-        res.sendStatus(500);
-        throw new Error(err)
+        return next(new Error('Something went wrong updating the content, please try again.'));
     });
 
     res.sendStatus(200);
 })
 
-router.delete('/', passport.authenticate('jwt', { session: false }), async function (req, res) {
+router.delete('/', passport.authenticate('jwt', { session: false }), async function (req, res, next) {
     const {
         contentId,
         contentUrl
     } = req.body;
 
-    await sftp_client.delete(contentUrl);
-
-    await content_handler.deleteContent(contentId).catch((err) => {
-        res.sendStatus(500);
-        throw new Error(err)
-    });
+    try 
+    {
+        await content_handler.deleteContent(contentId, contentUrl);
+    } 
+    catch(err) 
+    {
+        return next(new Error('Something went wrong deleting the file, check the database/file server status and try again.'));
+    }
 
     res.sendStatus(200);
 })

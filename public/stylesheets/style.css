@@ -1,8 +1,44 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font: 14px "Montserrat", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
+  transition: 0.1s;
+}
+
+a:hover {
+  color: #0082c6;
+}
+
+#contentParent {
+  background-color: #eef0f8;
+}
+
+.navbar, #contentView {
+  background-color: whitesmoke;
+}
+
+.form-login, 
+.form-register {
+  width: 100%;
+  max-width: 40%;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.topicItem:hover, 
+.contentItem:hover, 
+.deleteContent:hover {
+  cursor: pointer;
+}
+
+.feather-16 {
+  width: 16px;
+  height: 16px;
+}
+
+.feather-24 {
+  width: 24px;
+  height: 24px;
 }
