@@ -11,6 +11,6 @@ before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
 
 script:
-  - npm travis_test
+  - npm run travis_test
 
 after_success: npm run coverage
