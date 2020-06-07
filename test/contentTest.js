@@ -2,8 +2,8 @@
 
 const sinon = require('sinon');
 const assert = require('assert');
-const database = require('../routes/database/database_connector')
-const content_handler = require('../routes/database/content_handler')
+const database = require('../data/database_connector')
+const content_handler = require('../business/content_handler')
 
 describe('Testing database interaction with: Content', () => {
 
