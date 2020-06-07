@@ -7,14 +7,10 @@ const fs = require('fs');
 const key = null;
 const cert = null;
 
-try
+if(process.env.NODE_ENV != "test")
 {
     key = fs.readFileSync(__dirname + '/../certs/server.key');
     cert = fs.readFileSync(__dirname + '/../certs/server.cert');
-}
-catch(error)
-{
-    return;
 }
 
 const db_connection_config_test =
