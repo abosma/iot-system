@@ -4,8 +4,18 @@ const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
 const fs = require('fs');
 
-const key = fs.readFileSync(__dirname + '/../certs/server.key');
-const cert = fs.readFileSync(__dirname + '/../certs/server.cert')
+const key = null;
+const cert = null;
+
+try
+{
+    key = fs.readFileSync(__dirname + '/../certs/server.key');
+    cert = fs.readFileSync(__dirname + '/../certs/server.cert');
+}
+catch(error)
+{
+    return;
+}
 
 const db_connection_config_test =
 {
