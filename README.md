@@ -8,7 +8,7 @@ IoT system for thesis by Atilla Bosma.
 ### Software
 [Node JS (system tested on LTS (v12.18.0))](https://nodejs.org/en/download/)
 
-[MQTT Broker (system tested with Mosquitto)](https://mosquitto.org/download/)
+[MQTT Broker (any broker works, system tested with Mosquitto)](https://mosquitto.org/download/)
 
 [Postgres Database (version doesn't matter)](https://www.postgresql.org/download/)  
 [*Database Schema for Postgres Database*](https://pastebin.com/mi05AAhe)
