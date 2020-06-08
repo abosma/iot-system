@@ -3,11 +3,19 @@ PGPASSWORD = // Postgres Password
 PGDATABASE = // Postgres Database
 PGHOST = // Postgres IP
 PGPORT = // Postgres Port
+PG_SERVER_CERT = // Location of the Postgres server certificate. This is relative to the /data directory.
+PG_SERVER_KEY = // Location of the Postgres server key. This is relative to the /data directory.
+
 MQTT_HOST = // MQTT IP
 MQTT_PORT = // MQTT Port
 MQTT_CLIENTNAME = // MQTT client name for iot-system, can be anything
+MQTT_SERVER_CA_CERT_LOCATION = // Location of the MQTT CA certificate. This is relative to the /data directory.
+MQTT_SERVER_CLIENT_CERT_LOCATION = // Location of the MQTT Client certificate. This is relative to the /data directory.
+MQTT_SERVER_CLIENT_KEY_LOCATION = // Location of the MQTT Client key. This is relative to the /data directory.
+
 SFTP_HOST = // SFTP IP
 SFTP_USERNAME = // SFTP Username
 SFTP_PASSWORD = // SFTP Password
 SFTP_UPLOAD_PATH = // Upload path of files on SFTP server (ex: C:\FileServer\Uploads)
+
 HASH_SECRET = // Secret string for hashing the passwords
