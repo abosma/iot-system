@@ -35,21 +35,25 @@ router.post('/', passport.authenticate('jwt', { session: false }), async functio
         contentType
     } = req.body;
 
-    await content_handler.createContent(contentUrl, contentType).catch((err) => {
+    content_handler.createContent(contentUrl, contentType)
+    .then(() => {
+        res.redirect('/content');
+    })
+    .catch((err) => {
         return next(new Error('Something went wrong creating a new content row, please try again.'));
     });
-
-    res.redirect('/content');
 })
 
 router.post('/upload', passport.authenticate('jwt', { session: false }), async function (req, res, next) {
     const formRequest = req;
 
-    await content_handler.uploadContent(formRequest).catch((err) => {
-        return next(new Error('Something went wrong uploading the content, check the database/file server status and try again.'));
+    content_handler.uploadContent(formRequest)
+    .then(() => {
+        res.redirect('/content');
     })
-
-    res.sendStatus(200);
+    .catch((err) => {
+        return next(new Error('Something went wrong uploading the content. Check the database/file server status and/or if the file hasn\'t been uploaded yet.'));
+    });
 })
 
 router.put('/', passport.authenticate('jwt', { session: false }), async function (req, res, next) {
@@ -59,11 +63,13 @@ router.put('/', passport.authenticate('jwt', { session: false }), async function
         contentType
     } = req.body;
 
-    await content_handler.updateContent(contentUrl, contentType, contentId).catch((err) => {
+    content_handler.updateContent(contentUrl, contentType, contentId)
+    .then(() => {
+        res.redirect('/content');
+    })
+    .catch((err) => {
         return next(new Error('Something went wrong updating the content, please try again.'));
     });
-
-    res.sendStatus(200);
 })
 
 router.delete('/', passport.authenticate('jwt', { session: false }), async function (req, res, next) {
@@ -72,16 +78,15 @@ router.delete('/', passport.authenticate('jwt', { session: false }), async funct
         contentUrl
     } = req.body;
 
-    try 
-    {
-        await content_handler.deleteContent(contentId, contentUrl);
-    } 
-    catch(err) 
+    content_handler.deleteContent(contentId, contentUrl)
+    .then(() => {
+        // Deleting content is done with an ajax call, thats why 200 is sent instead of redirecting to content.
+        res.sendStatus(200);
+    })
+    .catch((err) => 
     {
         return next(new Error('Something went wrong deleting the file, check the database/file server status and try again.'));
-    }
-
-    res.sendStatus(200);
+    });
 })
 
 module.exports = router;
