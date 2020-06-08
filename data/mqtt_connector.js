@@ -3,12 +3,13 @@ const logger = require('../logging/winston')
 const topic_handler = require('../business/topic_handler')
 const content_handler = require('../business/content_handler')
 const fs = require('fs');
-
-const key = fs.readFileSync(__dirname + '/../certs/mqtt_srv.key');
-const cert = fs.readFileSync(__dirname + '/../certs/mqtt_srv.cert');
-const ca = fs.readFileSync(__dirname + '/../certs/mqtt_ca.cert');
+const path = require('path');
 
 require('dotenv').config();
+
+const ca = fs.readFileSync(path.resolve(__dirname + process.env.MQTT_SERVER_CA_CERT_LOCATION));
+const cert = fs.readFileSync(path.resolve(__dirname + process.env.MQTT_SERVER_CLIENT_CERT_LOCATION));
+const key = fs.readFileSync(path.resolve(__dirname + process.env.MQTT_SERVER_CLIENT_KEY_LOCATION));
 
 const mqtt_connection_config = 
 {
