@@ -10,6 +10,11 @@ function getContentById(contentId) {
         .then((data) => {
             const toReturnContent = data.rows[0];
 
+            if(!toReturnContent)
+            {
+                throw new Error('Content not found, please check if the topic has content.');
+            }
+
             resolve(toReturnContent);
         })
         .catch((err) => {
