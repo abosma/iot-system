@@ -3,14 +3,17 @@
 const { Pool } = require('pg');
 const bcrypt = require('bcrypt');
 const fs = require('fs');
+const path = require('path');
+
+require('dotenv').config();
 
 var key = null;
 var cert = null;
 
 if(process.env.NODE_ENV != "test")
 {
-    key = fs.readFileSync(__dirname + '/../certs/server.key');
-    cert = fs.readFileSync(__dirname + '/../certs/server.cert');
+    key = fs.readFileSync(path.resolve(__dirname + process.env.PG_SERVER_KEY));
+    cert = fs.readFileSync(path.resolve(__dirname + process.env.PG_SERVER_CERT));
 }
 
 const db_connection_config = 
