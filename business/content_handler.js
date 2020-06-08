@@ -10,6 +10,11 @@ function getContentById(contentId) {
         .then((data) => {
             const toReturnContent = data.rows[0];
 
+            if(!toReturnContent)
+            {
+                throw new Error('Content not found, please check if the topic has content.');
+            }
+
             resolve(toReturnContent);
         })
         .catch((err) => {
@@ -53,57 +58,67 @@ function uploadContent(formRequest)
         const fileParser = new formidable.IncomingForm();
 
         fileParser.parse(formRequest)
-            .on('fileBegin', async (name, file) => {
-                var uploadFolder = __dirname + '/uploads/';
-                var expectedTempFileLocation = uploadFolder + file.name;
+        .on('file', async (name, file) => {
+            const contentUrl = file.path;
+            const contentType = file.type;
+            const externalPath = process.env.SFTP_UPLOAD_PATH + '\\' + file.name;
 
-                // If folder doesn't exist, create folder
-                await fs.stat(uploadFolder)
-                .catch(async (err) => 
-                    await fs.mkdir(uploadFolder)
-                );
+            var connectedClient;
 
-                file.path = expectedTempFileLocation;
-            })
-            .on('file', async (name, file) => {
-                const contentUrl = file.path;
-                const contentType = file.type;
-                const externalPath = process.env.SFTP_UPLOAD_PATH + '\\' + file.name;
+            try
+            {
+                connectedClient = await sftp_connector.getConnectedClient();
 
-                try {
-                    var connectedClient = await sftp_connector.getConnectedClient();
+                var fileExists = await connectedClient.exists(externalPath);
 
-                    await connectedClient.fastPut(contentUrl, externalPath);
-
-                    await this.createContent(externalPath, contentType);
-
-                    await connectedClient.end();
-
-                    resolve();
-                } catch(err) {
-                    reject(err);
+                // fileExists can be false, d (dir), - (file), or l (link).
+                // https://www.npmjs.com/package/ssh2-sftp-client#org62ac504
+                if(fileExists != false)
+                {
+                    throw new Error('File has already been uploaded, please upload something else.');
                 }
 
-                fs.unlink(contentUrl)
-                .then(() => {
-                    resolve();
-                })
-                .catch((err) => reject(err));
-            })
-            .on('error', (err) => {
+                await connectedClient.fastPut(contentUrl, externalPath);
+
+                await this.createContent(externalPath, contentType);
+
+                resolve();
+            }
+            catch(err)
+            {
                 reject(err);
-            })
+            }
+            finally
+            {
+                await connectedClient.end();
+
+                await fs.unlink(contentUrl);
+            }
+        })
+        .on('error', (err) => {
+            reject(err);
+        })
     })
 }
 
 function deleteContent(contentId, contentUrl) {
     return new Promise(async (resolve, reject) => 
     {
+        var connectedClient;
+
         try
         {
-            var connectedClient = await sftp_connector.getConnectedClient();
+            connectedClient = await sftp_connector.getConnectedClient();
 
-            await connectedClient.delete(contentUrl);
+            var fileExists = await connectedClient.exists(contentUrl);
+
+            // fileExists can be false, d (dir), - (file), or l (link).
+            // https://www.npmjs.com/package/ssh2-sftp-client#org62ac504
+            if(fileExists == '-')
+            {
+                await connectedClient.delete(contentUrl);
+            }
+            
             await database_connector.query('DELETE FROM content WHERE id = $1::integer', [contentId]);
 
             resolve();
@@ -111,6 +126,10 @@ function deleteContent(contentId, contentUrl) {
         catch(err)
         {
             reject(err);
+        }
+        finally
+        {
+            await connectedClient.end();
         }
     })
 }

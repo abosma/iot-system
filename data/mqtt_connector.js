@@ -46,28 +46,66 @@ client.on('error', (err) => {
 function initializeMessageHandler()
 {
     client.on('message', async function (topic, message) {
-        const messageObject = JSON.parse(message);
-    
-        if (!messageIsFromSystem(messageObject.client)) {
-            const topicData = await topic_handler.getTopicByName(topic).catch((err) => logger.error(err));
-            const contentData = await content_handler.getContentById(topicData.content_id).catch((err) => logger.error(err));
-    
-            const toReturnContentData = {
-                client: 'System',
-                
-                message: '200',
+        var messageObject;
 
-                contentUrl: contentData.content_url,
-                contentType: contentData.content_type
+        try
+        {
+            messageObject = JSON.parse(message);
+        }
+        catch(err)
+        {
+            return;
+        }
+
+        if (!messageIsFromSystem(messageObject.client)) {
+            try
+            {
+                const topicData = await topic_handler.getTopicByName(topic);
+                const contentData = await content_handler.getContentById(topicData.content_id);
+                const returnMessage = createContentMessage(contentData);
+                
+                await client.publish(topic, returnMessage);
             }
-    
-            var returnMessage = JSON.stringify(toReturnContentData);
-    
-            await client.publish(topic, returnMessage).catch((err) => logger.error(err));
+            catch(err)
+            {
+                const returnMessage = createErrorMessage();
+
+                await client.publish(topic, returnMessage);
+
+                logger.error(err.message);
+            }
         }
     })
 
     logger.debug('MQTT: Initialized message handler.');
+}
+
+function createContentMessage(contentData)
+{
+    var toReturnContentData = {
+        client: 'System',
+        code: '200',
+        message: 'Content found',
+        contentUrl: contentData.content_url,
+        contentType: contentData.content_type
+    }
+
+    var toReturnJsonString = JSON.stringify(toReturnContentData);
+
+    return toReturnJsonString;
+}
+
+function createErrorMessage()
+{
+    var toReturnErrorMessage = {
+        client: 'System',
+        code: '500',
+        message: 'Content not found'
+    }
+
+    var toReturnJsonString = JSON.stringify(toReturnErrorMessage);
+
+    return toReturnJsonString;
 }
 
 function messageIsFromSystem(clientString)
