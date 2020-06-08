@@ -28,12 +28,22 @@ function getConnectionStatus()
 {
     // It resolves false instead of rejecting, this is so routes/status.js can easily render the status
     return new Promise((resolve, reject) => {
-        sftp_client.cwd()
-        .then(async (directory) => {
-            resolve(true);
+        sftp_client.connect(sftp_config)
+        .then(async () => {
+            var currentDirectory = await sftp_client.cwd();
+            
+            if(currentDirectory != null)
+            {
+                resolve(true);
+            }
+
+            resolve(false);
         })
         .catch(error => {
-            resolve(false);
+            reject(error);
+        })
+        .finally(async () => {
+            await sftp_client.end();
         })
     })
 }
